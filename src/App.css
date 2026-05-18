@@ -1,0 +1,672 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: var(--bg-color);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  padding-bottom: 80px; /* Space for bottom nav */
+  cursor: grab;
+}
+
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background-color: var(--surface-color);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  z-index: 10;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  transition: color 0.2s;
+}
+
+.nav-item:hover, .nav-item.active {
+  color: var(--primary-color);
+}
+
+/* View Components */
+.view-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.icon-btn {
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.card {
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.card h2 {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  color: var(--accent-color);
+}
+
+.primary-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  width: 100%;
+  margin-top: auto;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+.primary-btn:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* Calendar Styles */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.calendar-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.calendar {
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.calendar-cell:hover {
+  background-color: rgba(255,255,255,0.05);
+}
+
+.calendar-cell.disabled {
+  color: rgba(255,255,255,0.2);
+}
+
+.calendar-cell.selected {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.calendar-cell.today {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 700;
+}
+
+.event-dot {
+  width: 4px;
+  height: 4px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  position: absolute;
+  bottom: 4px;
+}
+
+.selected-date-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.selected-date-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.workout-area {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 160px;
+  overflow: visible;
+}
+
+.empty-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  color: var(--text-secondary);
+  border-style: dashed;
+  background-color: transparent;
+}
+
+/* FAB Button */
+.fab {
+  position: absolute;
+  bottom: 90px; /* Above the bottom nav */
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  z-index: 20;
+  transition: transform 0.2s;
+}
+
+.fab:active {
+  transform: scale(0.9);
+}
+
+/* Bottom Sheet */
+.bottom-sheet-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 30;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.bottom-sheet-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bottom-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--bg-color);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  padding: 24px 20px;
+  z-index: 40;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom-sheet.open {
+  transform: translateY(0);
+}
+
+.sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sheet-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.sheet-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Exercise List */
+.exercise-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exercise-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--surface-color);
+  padding: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.exercise-item:active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.add-icon {
+  color: var(--primary-color);
+}
+
+/* Exercise Input View */
+.exercise-input-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.recorded-sets {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 80px;
+}
+
+.no-sets {
+  color: var(--text-secondary);
+  text-align: center;
+  margin: auto 0;
+  font-size: 0.9rem;
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--surface-color);
+  padding: 12px 16px;
+  border-radius: 8px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.set-num {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  width: 50px;
+}
+
+.set-info {
+  font-weight: 600;
+  flex: 1;
+  text-align: center;
+}
+
+.set-check {
+  color: var(--accent-color);
+}
+
+.input-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input-group {
+  display: flex;
+  gap: 12px;
+}
+
+.input-field {
+  flex: 1;
+  background-color: var(--surface-color);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.input-field input {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  width: 100%;
+  outline: none;
+}
+
+.input-field input::placeholder {
+  color: rgba(255,255,255,0.2);
+}
+
+.input-field span {
+  color: var(--text-secondary);
+  margin-left: 8px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.secondary-btn {
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.add-set-btn {
+  flex: 2;
+  margin-top: 0;
+}
+
+.complete-btn {
+  background-color: var(--accent-color);
+  margin-top: 10px;
+}
+
+/* Daily Workouts List */
+.daily-workouts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.workout-log-card {
+  position: relative;
+  overflow: hidden;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.workout-log-title {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 8px;
+}
+
+.workout-log-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workout-log-set-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.log-set-num {
+  color: var(--text-secondary);
+}
+
+.log-set-info {
+  font-weight: 600;
+}
+
+/* Empty Bar Badge & Toggle Styles */
+.secondary-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.secondary-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.check-icon {
+  opacity: 0.3;
+}
+
+.secondary-btn.active .check-icon {
+  opacity: 1;
+}
+
+.input-field.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.empty-bar-badge {
+  display: inline-block;
+  background-color: var(--surface-color);
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Edge Panel & Stickers */
+.edge-panel {
+  position: absolute;
+  top: 120px;
+  right: 0;
+  width: 60px;
+  background-color: var(--surface-color);
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1);
+  z-index: 50;
+  box-shadow: -4px 0 15px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-right: none;
+}
+
+.edge-panel.open {
+  transform: translateX(0);
+}
+
+.edge-handle {
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 60px;
+  background-color: var(--surface-color);
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-right: none;
+}
+
+.handle-bar {
+  width: 4px;
+  height: 20px;
+  background-color: var(--text-secondary);
+  border-radius: 2px;
+}
+
+.sticker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0;
+  align-items: center;
+}
+
+.sticker-item {
+  font-size: 1.8rem;
+  cursor: grab;
+  transition: transform 0.2s;
+  user-select: none;
+}
+
+.sticker-item:active {
+  cursor: grabbing;
+  transform: scale(1.2);
+}
+
+.attached-stickers-layer {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 10;
+}
+
+.interactive-sticker {
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: auto;
+  user-select: none;
+  cursor: move;
+  transform-origin: center center;
+  touch-action: none;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+}
+
+.interactive-sticker.active {
+  outline: 2px dashed rgba(255,255,255,0.8);
+  z-index: 20;
+}
+
+.sticker-content {
+  font-size: 3rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.sticker-control {
+  position: absolute;
+  bottom: -15px; right: -15px;
+  width: 30px; height: 30px;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: nwse-resize;
+  font-size: 16px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  pointer-events: auto;
+}
+
+.delete-handle {
+  bottom: auto; top: -15px;
+  right: -15px;
+  background: #ff4d4d;
+  cursor: pointer;
+}
+
+.delete-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(30, 30, 30, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: 30;
+  animation: fadeIn 0.2s ease;
+}
+
+.delete-overlay .delete-btn {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0) rotate(-20deg); }
+  100% { transform: scale(1) rotate(0); }
+}
