@@ -6,7 +6,7 @@
 
 👉 **[https://sqoff.github.io/RUTI/](https://sqoff.github.io/RUTI/)**
 
-Vercel에 배포되어 있으며, 모바일 브라우저에서 바로 사용 가능하다. PWA로 설치하면 홈 화면에서 네이티브 앱처럼 실행된다.
+GitHub Pages에 배포되어 있으며, 모바일 브라우저에서 바로 사용 가능하다. PWA로 설치하면 홈 화면에서 네이티브 앱처럼 실행된다.
 
 ## 기술 스택
 
