@@ -284,10 +284,152 @@
 }
 
 .sheet-header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
+  gap: 8px;
   margin-bottom: 20px;
+}
+
+.sheet-header > :first-child {
+  justify-self: start;
+}
+
+.sheet-header > :last-child {
+  justify-self: end;
+}
+
+.sheet-header h2 {
+  white-space: nowrap;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.sheet-title-clickable {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 4px 16px;
+  transition: background-color 0.2s;
+  user-select: none;
+}
+
+.sheet-title-clickable:hover,
+.sheet-title-clickable:active {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.sheet-header-spacer {
+  width: 24px;
+  height: 24px;
+}
+
+.header-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 4px 8px 4px 0;
+  border-radius: 8px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+
+.header-back-btn:active {
+  opacity: 0.7;
+}
+
+.header-back-btn svg {
+  color: #ffffff;
+}
+
+.sheet-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Add Group/Exercise Modal */
+.add-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.add-modal {
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.add-modal h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.add-type-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.type-tab {
+  flex: 1;
+  background-color: rgba(255,255,255,0.05);
+  color: var(--text-secondary);
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.type-tab.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.add-input {
+  background-color: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  outline: none;
+  width: 100%;
+}
+
+.add-input::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+.add-modal-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.add-modal-actions button {
+  flex: 1;
+  margin-top: 0;
+  padding: 12px;
 }
 
 .sheet-header h2 {
@@ -301,6 +443,162 @@
 }
 
 /* Exercise List */
+.exercise-group-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.group-tab-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.group-tab-row .group-tab {
+  flex: 1;
+}
+
+.item-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.2s, color 0.2s, background-color 0.2s;
+}
+
+.item-delete-btn:hover,
+.item-delete-btn:active {
+  opacity: 1;
+  color: #ff4d4d;
+  background-color: rgba(255, 77, 77, 0.12);
+}
+
+.exercise-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.add-pill-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  align-self: center;
+  margin: 16px auto 0;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background-color 0.2s, transform 0.1s;
+  min-width: 200px;
+}
+
+.add-pill-btn:active {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(0.98);
+}
+
+.row-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  list-style: none;
+}
+
+.row-delete-action {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ff4d4d;
+  color: white;
+  padding: 0 24px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  animation: slideInFromRight 0.2s ease;
+}
+
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.favorite-star {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  transition: color 0.2s, background-color 0.2s;
+  cursor: pointer;
+}
+
+.favorite-star.active {
+  color: #facc15;
+}
+
+.favorite-star:active {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.group-tab {
+  width: 100%;
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 1px solid rgba(255,255,255,0.05);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.group-tab:active {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.group-back-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.group-back-btn:active {
+  color: var(--text-primary);
+}
+
 .exercise-list {
   list-style: none;
   display: flex;
@@ -585,11 +883,23 @@
   cursor: grab;
   transition: transform 0.2s;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
 }
 
 .sticker-item:active {
   cursor: grabbing;
   transform: scale(1.2);
+}
+
+.sticker-drag-ghost {
+  position: fixed;
+  transform: translate(-50%, -50%) scale(1.4);
+  font-size: 1.8rem;
+  pointer-events: none;
+  z-index: 9999;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
 }
 
 .attached-stickers-layer {
@@ -648,17 +958,50 @@
   top: 0; left: 0; right: 0; bottom: 0;
   background-color: rgba(30, 30, 30, 0.9);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
+  padding: 0 12px;
   z-index: 30;
   animation: fadeIn 0.2s ease;
+}
+
+.delete-overlay > button {
+  flex: 1;
+  width: auto;
+  margin-top: 0;
+  padding: 12px 8px;
+  font-size: 0.95rem;
 }
 
 .delete-overlay .delete-btn {
   background-color: #ff4d4d;
   color: white;
+}
+
+.delete-overlay .edit-btn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.set-remove-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.set-remove-btn:hover,
+.set-remove-btn:active {
+  background-color: rgba(255, 77, 77, 0.15);
+  color: #ff4d4d;
 }
 
 @keyframes fadeIn {

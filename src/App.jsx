@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import localforage from 'localforage'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import { Home, Dumbbell, Camera, BarChart3, Settings, Plus, X, Check } from 'lucide-react'
+import { Home, Dumbbell, Camera, BarChart3, Settings, Plus, X, Check, ChevronLeft, Star } from 'lucide-react'
 import './App.css'
 
 function App() {
@@ -201,6 +201,7 @@ function HomeView() {
   const [dailyWorkouts, setDailyWorkouts] = useState([]);
   const [workoutDates, setWorkoutDates] = useState([]); // format: 'workouts_yyyy-MM-dd'
   const [workoutToDelete, setWorkoutToDelete] = useState(null);
+  const [editingWorkoutIdx, setEditingWorkoutIdx] = useState(null);
   const workoutPressTimer = useRef(null);
 
   // Edge Panel & Sticker States
@@ -208,13 +209,179 @@ function HomeView() {
   const [isEdgePanelOpen, setIsEdgePanelOpen] = useState(false);
   const stickerList = ['🔥', '💪', '💦', '🌟', '💀', '🎯'];
 
+  // Touch drag state (for iOS Safari which doesn't support HTML5 DnD)
+  const [touchDragSticker, setTouchDragSticker] = useState(null);
+  const [touchDragPos, setTouchDragPos] = useState({ x: 0, y: 0 });
+  const selectedDateRef = useRef(selectedDate);
+  useEffect(() => { selectedDateRef.current = selectedDate; }, [selectedDate]);
+
   // Exercise Input States
   const [weight, setWeight] = useState('');
   const [reps, setReps] = useState('');
   const [sets, setSets] = useState([]);
   const [isEmptyBarActive, setIsEmptyBarActive] = useState(false);
 
-  const exerciseList = ['벤치프레스', '스쿼트', '데드리프트', '오버헤드 프레스', '바벨로우', '랫풀다운', '레그프레스'];
+  const DEFAULT_EXERCISE_GROUPS = {
+    '상체': ['벤치프레스', '오버헤드 프레스', '바벨로우', '랫풀다운'],
+    '하체': ['스쿼트', '데드리프트', '레그프레스'],
+  };
+  const [exerciseGroups, setExerciseGroups] = useState(DEFAULT_EXERCISE_GROUPS);
+  const [exerciseGroup, setExerciseGroup] = useState(null);
+
+  // Add modal states
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addType, setAddType] = useState('exercise'); // 'exercise' | 'group'
+  const [addName, setAddName] = useState('');
+
+  // Favorites
+  const [favoriteGroups, setFavoriteGroups] = useState([]);
+  const [favoriteExercises, setFavoriteExercises] = useState([]); // composite keys 'group:exercise'
+
+  // Long-press timers
+  const groupPressTimer = useRef(null);
+  const exercisePressTimer = useRef(null);
+  const groupLongPressedRef = useRef(false);
+  const exerciseLongPressedRef = useRef(false);
+
+  // Inline delete affordance: 'group:{name}' or 'exercise:{name}'
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  useEffect(() => {
+    if (!deleteTarget) return;
+    const handler = (e) => {
+      if (!e.target.closest('.row-wrapper')) {
+        setDeleteTarget(null);
+      }
+    };
+    const id = setTimeout(() => window.addEventListener('click', handler), 0);
+    return () => {
+      clearTimeout(id);
+      window.removeEventListener('click', handler);
+    };
+  }, [deleteTarget]);
+
+  useEffect(() => {
+    (async () => {
+      const stored = await localforage.getItem('exerciseGroups');
+      if (stored && typeof stored === 'object' && Object.keys(stored).length > 0) {
+        setExerciseGroups(stored);
+      } else {
+        await localforage.setItem('exerciseGroups', DEFAULT_EXERCISE_GROUPS);
+      }
+      const fav = await localforage.getItem('favorites');
+      if (fav && typeof fav === 'object') {
+        setFavoriteGroups(Array.isArray(fav.groups) ? fav.groups : []);
+        setFavoriteExercises(Array.isArray(fav.exercises) ? fav.exercises : []);
+      }
+    })();
+  }, []);
+
+  const saveFavorites = async (groups, exercises) => {
+    setFavoriteGroups(groups);
+    setFavoriteExercises(exercises);
+    await localforage.setItem('favorites', { groups, exercises });
+  };
+
+  const toggleGroupFavorite = async (g) => {
+    const next = favoriteGroups.includes(g)
+      ? favoriteGroups.filter(x => x !== g)
+      : [...favoriteGroups, g];
+    await saveFavorites(next, favoriteExercises);
+  };
+
+  const toggleExerciseFavorite = async (ex) => {
+    if (!exerciseGroup) return;
+    const key = `${exerciseGroup}:${ex}`;
+    const next = favoriteExercises.includes(key)
+      ? favoriteExercises.filter(x => x !== key)
+      : [...favoriteExercises, key];
+    await saveFavorites(favoriteGroups, next);
+  };
+
+  const sortedGroupKeys = () => {
+    const keys = Object.keys(exerciseGroups);
+    const favs = keys.filter(k => favoriteGroups.includes(k));
+    const rest = keys.filter(k => !favoriteGroups.includes(k));
+    return [...favs, ...rest];
+  };
+
+  const sortedExercises = (g) => {
+    const list = exerciseGroups[g] || [];
+    const favs = list.filter(ex => favoriteExercises.includes(`${g}:${ex}`));
+    const rest = list.filter(ex => !favoriteExercises.includes(`${g}:${ex}`));
+    return [...favs, ...rest];
+  };
+
+  // Long-press handlers — reveal slide-in delete button
+  const startGroupPress = (g) => {
+    groupLongPressedRef.current = false;
+    clearTimeout(groupPressTimer.current);
+    groupPressTimer.current = setTimeout(() => {
+      groupLongPressedRef.current = true;
+      setDeleteTarget(`group:${g}`);
+    }, 600);
+  };
+  const clearGroupPress = () => clearTimeout(groupPressTimer.current);
+
+  const startExercisePress = (ex) => {
+    exerciseLongPressedRef.current = false;
+    clearTimeout(exercisePressTimer.current);
+    exercisePressTimer.current = setTimeout(() => {
+      exerciseLongPressedRef.current = true;
+      setDeleteTarget(`exercise:${ex}`);
+    }, 600);
+  };
+  const clearExercisePress = () => clearTimeout(exercisePressTimer.current);
+
+  const saveExerciseGroups = async (next) => {
+    setExerciseGroups(next);
+    await localforage.setItem('exerciseGroups', next);
+  };
+
+  const openAddModal = (type) => {
+    setAddType(type);
+    setAddName('');
+    setIsAddModalOpen(true);
+  };
+
+  const handleAddSubmit = async () => {
+    const name = addName.trim();
+    if (!name) return;
+    if (addType === 'group') {
+      if (exerciseGroups[name]) { alert('이미 존재하는 부위입니다.'); return; }
+      await saveExerciseGroups({ ...exerciseGroups, [name]: [] });
+    } else {
+      if (!exerciseGroup) return;
+      const list = exerciseGroups[exerciseGroup] || [];
+      if (list.includes(name)) { alert('이미 존재하는 운동입니다.'); return; }
+      await saveExerciseGroups({ ...exerciseGroups, [exerciseGroup]: [...list, name] });
+    }
+    setAddName('');
+    setIsAddModalOpen(false);
+  };
+
+  const handleDeleteGroup = async (g) => {
+    const next = { ...exerciseGroups };
+    delete next[g];
+    await saveExerciseGroups(next);
+    const nextFavGroups = favoriteGroups.filter(x => x !== g);
+    const nextFavEx = favoriteExercises.filter(x => !x.startsWith(`${g}:`));
+    if (nextFavGroups.length !== favoriteGroups.length || nextFavEx.length !== favoriteExercises.length) {
+      await saveFavorites(nextFavGroups, nextFavEx);
+    }
+    setDeleteTarget(null);
+  };
+
+  const handleDeleteExerciseFromGroup = async (ex) => {
+    if (!exerciseGroup) return;
+    const list = (exerciseGroups[exerciseGroup] || []).filter(x => x !== ex);
+    await saveExerciseGroups({ ...exerciseGroups, [exerciseGroup]: list });
+    const key = `${exerciseGroup}:${ex}`;
+    if (favoriteExercises.includes(key)) {
+      await saveFavorites(favoriteGroups, favoriteExercises.filter(x => x !== key));
+    }
+    setDeleteTarget(null);
+  };
 
   useEffect(() => {
     fetchWorkoutDates();
@@ -228,7 +395,16 @@ function HomeView() {
     try {
       const keys = await localforage.keys();
       const wKeys = keys.filter(k => k.startsWith('workouts_'));
-      setWorkoutDates(wKeys);
+      const nonEmptyKeys = [];
+      for (const k of wKeys) {
+        const data = await localforage.getItem(k);
+        if (Array.isArray(data) && data.length > 0) {
+          nonEmptyKeys.push(k);
+        } else {
+          await localforage.removeItem(k);
+        }
+      }
+      setWorkoutDates(nonEmptyKeys);
     } catch (e) {
       console.error(e);
     }
@@ -270,14 +446,17 @@ function HomeView() {
     if (sets.length > 0) {
       const dateKey = `workouts_${format(selectedDate, 'yyyy-MM-dd')}`;
       let currentWorkouts = await localforage.getItem(dateKey) || [];
-      
-      currentWorkouts.push({
-        exercise: selectedExercise,
-        sets: [...sets]
-      });
-      
+
+      const entry = { exercise: selectedExercise, sets: [...sets] };
+
+      if (editingWorkoutIdx !== null && currentWorkouts[editingWorkoutIdx]) {
+        currentWorkouts[editingWorkoutIdx] = entry;
+      } else {
+        currentWorkouts.push(entry);
+      }
+
       await localforage.setItem(dateKey, currentWorkouts);
-      
+
       if (!workoutDates.includes(dateKey)) {
         setWorkoutDates([...workoutDates, dateKey]);
       }
@@ -286,11 +465,85 @@ function HomeView() {
     closeSheet();
   };
 
+  const handleEditWorkout = (idx) => {
+    const w = dailyWorkouts[idx];
+    if (!w) return;
+    setEditingWorkoutIdx(idx);
+    setSelectedExercise(w.exercise);
+    setSets(w.sets.map(s => ({ ...s })));
+    setWeight('');
+    setReps('');
+    setIsEmptyBarActive(false);
+    setWorkoutToDelete(null);
+    setIsBottomSheetOpen(true);
+  };
+
+  const removeSetAt = (idx) => {
+    setSets(prev => prev.filter((_, i) => i !== idx));
+  };
+
   // Sticker Drag & Drop Handlers
   const handleDragStart = (e, sticker) => {
     e.dataTransfer.setData('text/plain', sticker);
     e.dataTransfer.effectAllowed = 'copy';
   };
+
+  // Touch-based drag for iOS Safari
+  const dropStickerAt = async (emoji, clientX, clientY) => {
+    const el = document.elementFromPoint(clientX, clientY);
+    const workoutArea = el?.closest('.workout-area');
+    if (!workoutArea) return;
+    const rect = workoutArea.getBoundingClientRect();
+    const dropX = clientX - rect.left;
+    const dropY = clientY - rect.top;
+
+    const newSticker = {
+      id: Date.now().toString() + Math.random().toString().substring(2, 6),
+      emoji,
+      x: dropX - 25,
+      y: dropY - 25,
+      scale: 1,
+      rotation: Math.floor(Math.random() * 30) - 15
+    };
+
+    const dateKey = `stickers_${format(selectedDateRef.current, 'yyyy-MM-dd')}`;
+    let currentStickers = await localforage.getItem(dateKey) || [];
+    currentStickers.push(newSticker);
+    await localforage.setItem(dateKey, currentStickers);
+    fetchDailyWorkouts();
+  };
+
+  const handleStickerTouchStart = (e, sticker) => {
+    const t = e.touches[0];
+    setTouchDragSticker(sticker);
+    setTouchDragPos({ x: t.clientX, y: t.clientY });
+  };
+
+  useEffect(() => {
+    if (!touchDragSticker) return;
+
+    const onMove = (e) => {
+      if (e.cancelable) e.preventDefault();
+      const t = e.touches[0];
+      setTouchDragPos({ x: t.clientX, y: t.clientY });
+    };
+    const onEnd = (e) => {
+      const t = e.changedTouches[0];
+      const emoji = touchDragSticker;
+      setTouchDragSticker(null);
+      if (t) dropStickerAt(emoji, t.clientX, t.clientY);
+    };
+    const onCancel = () => setTouchDragSticker(null);
+
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('touchend', onEnd);
+    window.addEventListener('touchcancel', onCancel);
+    return () => {
+      window.removeEventListener('touchmove', onMove);
+      window.removeEventListener('touchend', onEnd);
+      window.removeEventListener('touchcancel', onCancel);
+    };
+  }, [touchDragSticker]);
 
   const handleDragOver = (e) => {
     e.preventDefault(); // Necessary to allow dropping
@@ -352,7 +605,12 @@ function HomeView() {
     const dateKey = `workouts_${format(selectedDate, 'yyyy-MM-dd')}`;
     let currentWorkouts = await localforage.getItem(dateKey) || [];
     currentWorkouts.splice(idx, 1);
-    await localforage.setItem(dateKey, currentWorkouts);
+    if (currentWorkouts.length === 0) {
+      await localforage.removeItem(dateKey);
+      setWorkoutDates(prev => prev.filter(k => k !== dateKey));
+    } else {
+      await localforage.setItem(dateKey, currentWorkouts);
+    }
     setWorkoutToDelete(null);
     fetchDailyWorkouts();
   };
@@ -365,6 +623,8 @@ function HomeView() {
       setWeight('');
       setReps('');
       setIsEmptyBarActive(false);
+      setEditingWorkoutIdx(null);
+      setExerciseGroup(null);
     }, 300);
   };
 
@@ -486,7 +746,8 @@ function HomeView() {
                 >
                   {workoutToDelete === idx && (
                     <div className="delete-overlay">
-                      <button className="primary-btn delete-btn" onClick={() => handleDeleteWorkout(idx)}>기록 삭제</button>
+                      <button className="primary-btn edit-btn" onClick={() => handleEditWorkout(idx)}>수정</button>
+                      <button className="primary-btn delete-btn" onClick={() => handleDeleteWorkout(idx)}>삭제</button>
                       <button className="secondary-btn" onClick={() => setWorkoutToDelete(null)}>취소</button>
                     </div>
                   )}
@@ -522,11 +783,12 @@ function HomeView() {
         </div>
         <div className="sticker-container">
           {stickerList.map((sticker, idx) => (
-            <div 
-              key={idx} 
-              className="sticker-item" 
-              draggable 
+            <div
+              key={idx}
+              className="sticker-item"
+              draggable
               onDragStart={(e) => handleDragStart(e, sticker)}
+              onTouchStart={(e) => handleStickerTouchStart(e, sticker)}
             >
               {sticker}
             </div>
@@ -534,24 +796,123 @@ function HomeView() {
         </div>
       </div>
 
+      {touchDragSticker && (
+        <div
+          className="sticker-drag-ghost"
+          style={{ left: touchDragPos.x, top: touchDragPos.y }}
+        >
+          {touchDragSticker}
+        </div>
+      )}
+
       {/* Bottom Sheet Overlay & Container */}
       <div className={`bottom-sheet-overlay ${isBottomSheetOpen ? 'open' : ''}`} onClick={closeSheet}></div>
       <div className={`bottom-sheet ${isBottomSheetOpen ? 'open' : ''}`}>
         <div className="sheet-header">
-          <h2>{selectedExercise ? selectedExercise : '운동 선택'}</h2>
+          {(!selectedExercise && exerciseGroup) ? (
+            <button
+              className="header-back-btn"
+              onClick={() => setExerciseGroup(null)}
+              aria-label="뒤로"
+            >
+              <ChevronLeft size={22} />
+              <span>{exerciseGroup}</span>
+            </button>
+          ) : (
+            <div className="sheet-header-spacer" />
+          )}
+          <h2
+            className={!selectedExercise ? 'sheet-title-clickable' : ''}
+            onClick={!selectedExercise ? () => openAddModal(exerciseGroup ? 'exercise' : 'group') : undefined}
+          >
+            {selectedExercise
+              ? `${selectedExercise}${editingWorkoutIdx !== null ? ' 수정' : ''}`
+              : (exerciseGroup ? '운동 선택' : '부위 선택')}
+          </h2>
           <button className="icon-btn" onClick={closeSheet}><X size={24} /></button>
         </div>
         
         <div className="sheet-content">
           {!selectedExercise ? (
-            <ul className="exercise-list">
-              {exerciseList.map((ex, idx) => (
-                <li key={idx} className="exercise-item" onClick={() => setSelectedExercise(ex)}>
-                  {ex}
-                  <Plus size={20} className="add-icon" />
-                </li>
-              ))}
-            </ul>
+            !exerciseGroup ? (
+              <>
+                <div className="exercise-group-tabs">
+                  {sortedGroupKeys().map(g => (
+                    <div key={g} className="row-wrapper">
+                      <button
+                        className="group-tab"
+                        onPointerDown={() => startGroupPress(g)}
+                        onPointerUp={clearGroupPress}
+                        onPointerMove={clearGroupPress}
+                        onPointerLeave={clearGroupPress}
+                        onPointerCancel={clearGroupPress}
+                        onClick={() => {
+                          if (groupLongPressedRef.current) { groupLongPressedRef.current = false; return; }
+                          if (deleteTarget) { setDeleteTarget(null); return; }
+                          setExerciseGroup(g);
+                        }}
+                      >
+                        <span>{g}</span>
+                        <span
+                          className={`favorite-star ${favoriteGroups.includes(g) ? 'active' : ''}`}
+                          onPointerDown={(e) => e.stopPropagation()}
+                          onClick={(e) => { e.stopPropagation(); toggleGroupFavorite(g); }}
+                        >
+                          <Star size={20} fill={favoriteGroups.includes(g) ? 'currentColor' : 'none'} />
+                        </span>
+                      </button>
+                      {deleteTarget === `group:${g}` && (
+                        <button
+                          className="row-delete-action"
+                          onClick={(e) => { e.stopPropagation(); handleDeleteGroup(g); }}
+                        >
+                          삭제
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <ul className="exercise-list">
+                  {sortedExercises(exerciseGroup).map((ex, idx) => (
+                    <li key={idx} className="row-wrapper exercise-row-wrapper">
+                      <div
+                        className="exercise-item"
+                        onPointerDown={() => startExercisePress(ex)}
+                        onPointerUp={clearExercisePress}
+                        onPointerMove={clearExercisePress}
+                        onPointerLeave={clearExercisePress}
+                        onPointerCancel={clearExercisePress}
+                        onClick={() => {
+                          if (exerciseLongPressedRef.current) { exerciseLongPressedRef.current = false; return; }
+                          if (deleteTarget) { setDeleteTarget(null); return; }
+                          setSelectedExercise(ex);
+                        }}
+                      >
+                        <span>{ex}</span>
+                        <span
+                          className={`favorite-star ${favoriteExercises.includes(`${exerciseGroup}:${ex}`) ? 'active' : ''}`}
+                          onPointerDown={(e) => e.stopPropagation()}
+                          onClick={(e) => { e.stopPropagation(); toggleExerciseFavorite(ex); }}
+                        >
+                          <Star size={20} fill={favoriteExercises.includes(`${exerciseGroup}:${ex}`) ? 'currentColor' : 'none'} />
+                        </span>
+                      </div>
+                      {deleteTarget === `exercise:${ex}` && (
+                        <button
+                          className="row-delete-action"
+                          onClick={(e) => { e.stopPropagation(); handleDeleteExerciseFromGroup(ex); }}
+                        >
+                          삭제
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )
           ) : (
             <div className="exercise-input-view">
               <div className="recorded-sets">
@@ -564,7 +925,9 @@ function HomeView() {
                       <span className="set-info">
                         {set.isEmptyBar ? `빈봉 x ${set.reps}회` : `${set.weight}kg x ${set.reps}회`}
                       </span>
-                      <Check size={18} className="set-check" />
+                      <button className="set-remove-btn" onClick={() => removeSetAt(idx)} aria-label="세트 삭제">
+                        <X size={18} />
+                      </button>
                     </div>
                   ))
                 )}
@@ -590,11 +953,32 @@ function HomeView() {
                 </div>
               </div>
               
-              <button className="primary-btn complete-btn" onClick={saveWorkout}>기록 완료</button>
+              <button className="primary-btn complete-btn" onClick={saveWorkout}>{editingWorkoutIdx !== null ? '수정 완료' : '기록 완료'}</button>
             </div>
           )}
         </div>
       </div>
+
+      {isAddModalOpen && (
+        <div className="add-modal-overlay" onClick={() => setIsAddModalOpen(false)}>
+          <div className="add-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>{addType === 'group' ? '새 부위 추가' : `'${exerciseGroup}'에 운동 추가`}</h3>
+            <input
+              className="add-input"
+              type="text"
+              placeholder={addType === 'group' ? '부위 이름' : '운동 이름'}
+              value={addName}
+              onChange={(e) => setAddName(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAddSubmit(); }}
+              autoFocus
+            />
+            <div className="add-modal-actions">
+              <button className="secondary-btn" onClick={() => setIsAddModalOpen(false)}>취소</button>
+              <button className="primary-btn" onClick={handleAddSubmit}>추가</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
