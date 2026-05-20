@@ -936,11 +936,11 @@ function HomeView() {
               <div className="input-controls">
                 <div className="input-group">
                   <div className={`input-field ${isEmptyBarActive ? 'disabled' : ''}`}>
-                    <input type="number" placeholder="무게" value={weight} onChange={(e) => setWeight(e.target.value)} disabled={isEmptyBarActive} />
+                    <input type="number" inputMode="decimal" pattern="[0-9]*\.?[0-9]*" placeholder="무게" value={weight} onChange={(e) => setWeight(e.target.value)} disabled={isEmptyBarActive} />
                     <span>kg</span>
                   </div>
                   <div className="input-field">
-                    <input type="number" placeholder="횟수" value={reps} onChange={(e) => setReps(e.target.value)} />
+                    <input type="number" inputMode="numeric" pattern="[0-9]*" placeholder="횟수" value={reps} onChange={(e) => setReps(e.target.value)} />
                     <span>회</span>
                   </div>
                 </div>
