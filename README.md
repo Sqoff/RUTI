@@ -4,7 +4,7 @@
 
 ## 🚀 라이브 데모
 
-👉 **[https://RUTI-sqoff.vercel.app](https://RUTI-sqoff.vercel.app)**
+👉 **[https://sqoff.github.io/RUTI/](https://sqoff.github.io/RUTI/)**
 
 Vercel에 배포되어 있으며, 모바일 브라우저에서 바로 사용 가능하다. PWA로 설치하면 홈 화면에서 네이티브 앱처럼 실행된다.
 
@@ -20,12 +20,12 @@ Vercel에 배포되어 있으며, 모바일 브라우저에서 바로 사용 가
 
 ## 스크립트
 
-| 명령 | 동작 |
-|------|------|
-| `npm run dev` | 개발 서버 (`http://localhost:5173`) |
-| `npm run build` | 프로덕션 빌드 (`dist/`) |
-| `npm run preview` | 빌드 결과 미리보기 |
-| `npm run lint` | ESLint 검사 |
+| 명령              | 동작                                |
+| ----------------- | ----------------------------------- |
+| `npm run dev`     | 개발 서버 (`http://localhost:5173`) |
+| `npm run build`   | 프로덕션 빌드 (`dist/`)             |
+| `npm run preview` | 빌드 결과 미리보기                  |
+| `npm run lint`    | ESLint 검사                         |
 
 ## 디렉토리 구조
 
@@ -74,10 +74,10 @@ vite.config.js   Vite + PWA 설정
 
 키 패턴은 날짜별로 분리되어 있다.
 
-| 키 | 값 | 비고 |
-|----|----|------|
+| 키                    | 값                                                                       | 비고                  |
+| --------------------- | ------------------------------------------------------------------------ | --------------------- |
 | `workouts_yyyy-MM-dd` | `Array<{ exercise: string, sets: Array<{ weight, reps, isEmptyBar }> }>` | 해당 날짜의 운동 기록 |
-| `stickers_yyyy-MM-dd` | `Array<{ id, emoji, x, y, scale, rotation }>` | 해당 날짜의 스티커 |
+| `stickers_yyyy-MM-dd` | `Array<{ id, emoji, x, y, scale, rotation }>`                            | 해당 날짜의 스티커    |
 
 - 스티커의 `x`, `y`는 `workout-area` 기준 좌표.
 - 레거시 마이그레이션: `workout.stickers`(예전 구조)는 `fetchDailyWorkouts`에서 `stickers_*` 키로 이관되며 원본에서 제거된다.
