@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RUTI - 4대 디자인 스타일 한눈에 나란히 비교하기 (Side-by-Side Comparison)</title>
+  <!-- Diverse Fonts for 4 Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Courier+Prime:wght@700&family=Gamja+Flower&family=Inter:wght@500;700;900&family=Montserrat:wght@800;900&family=Playfair+Display:wght@700;900&family=Pretendard:wght@400;600;700;800;900&family=Space+Grotesk:wght@700;800&family=Syne:wght@800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: #06080e;
+      color: #f8fafc;
+      font-family: 'Pretendard', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+      overflow-x: auto;
+    }
+
+    /* Page Header */
+    .showcase-header {
+      text-align: center;
+      margin-bottom: 24px;
+      max-width: 900px;
+    }
+    .header-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #38bdf8;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .header-title {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .header-sub {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    /* 4-Column Side-by-Side Comparison Container */
+    .comparison-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+      max-width: 1540px;
+      overflow-x: auto;
+      padding-bottom: 20px;
+    }
+
+    /* Single Phone Frame Wrapper */
+    .style-card-column {
+      flex: 0 0 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Style Label Header */
+    .column-title-box {
+      background: #101624;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .col-num-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .col-vibe-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .col-target-desc {
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.35;
+    }
+
+    /* Mobile Mockup Frame */
+    .mockup-frame {
+      width: 100%;
+      height: 640px;
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s;
+    }
+    .mockup-frame:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 0 2px rgba(255, 255, 255, 0.2);
+    }
+
+    /* App Header per Frame */
+    .frame-app-header {
+      padding: 14px 16px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 20;
+    }
+    .frame-logo {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .frame-streak-pill {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+
+    /* Date Bar per Frame */
+    .frame-date-bar {
+      padding: 2px 14px 8px;
+      display: flex;
+      gap: 6px;
+      overflow-x: hidden;
+    }
+    .mini-date-chip {
+      flex: 1;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .mini-date-chip.active { font-weight: 900; }
+
+    /* Frame Body & Canvas */
+    .frame-body {
+      flex: 1;
+      padding: 8px 12px 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .frame-canvas-box {
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      padding: 12px;
+    }
+
+    /* Common Workout Card inside Frame */
+    .frame-workout-card {
+      position: relative;
+      z-index: 5;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+    }
+    .card-title-text { font-size: 14px; font-weight: 800; }
+    .card-set-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      padding: 3px 0;
+    }
+
+    /* Draggable Elements Layer */
+    .draggable-obj {
+      position: absolute;
+      cursor: grab;
+      touch-action: none;
+      transform-origin: center center;
+    }
+    .draggable-obj:active { cursor: grabbing; }
+
+    /* ========================================================
+       ✨ STYLE 1: CLEAN ATHLETIC (Nike & Apple Fitness)
+    ======================================================== */
+    .style-1-frame {
+      background: #080c14;
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+    }
+    .style-1-frame .frame-logo { font-family: 'Montserrat', sans-serif; color: #fff; }
+    .style-1-frame .frame-streak-pill { background: rgba(255, 94, 54, 0.15); color: #ff5e36; border: 1px solid rgba(255, 94, 54, 0.3); }
+    .style-1-frame .mini-date-chip { background: #111724; color: #94a3b8; }
+    .style-1-frame .mini-date-chip.active { background: #ff5e36; color: #000; }
+    .style-1-frame .frame-canvas-box {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .style-1-frame .frame-workout-card {
+      background: #182234;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    .style-1-badge {
+      background: #ff5e36;
+      color: #000;
+      font-weight: 900;
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(255, 94, 54, 0.4);
+    }
+    .style-1-pill {
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 11px;
+      color: #fff;
+      font-weight: 700;
+    }
+    .style-1-pill strong { color: #ff5e36; }
+
+    /* ========================================================
+       🏆 STYLE 2: VINTAGE OLD-SCHOOL GYM (Gold's Gym)
+    ======================================================== */
+    .style-2-frame {
+      background: #18130f;
+      color: #fdf8eb;
+      font-family: Georgia, serif;
+    }
+    .style-2-frame .frame-logo { font-family: 'Cinzel', serif; color: #d4af37; }
+    .style-2-frame .frame-streak-pill { background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid #d4af37; }
+    .style-2-frame .mini-date-chip { background: #261f18; color: #c4b5a0; border-color: rgba(212,175,55,0.2); font-family: 'Courier Prime', monospace; }
+    .style-2-frame .mini-date-chip.active { background: #d4af37; color: #1a140f; }
+    .style-2-frame .frame-canvas-box {
+      background: #201913;
+      border: 1.5px solid rgba(212, 175, 55, 0.3);
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
+    }
+    .style-2-frame .frame-workout-card {
+      background: #2b221b;
+      border: 1.5px solid #d4af37;
+      box-shadow: 4px 4px 0 #120e0b;
+      border-radius: 2px;
+    }
+    .style-2-stamp {
+      border: 2px solid #b91c1c;
+      color: #b91c1c;
+      font-family: 'Courier Prime', monospace;
+      font-weight: 900;
+      font-size: 11px;
+      padding: 5px 8px;
+      text-transform: uppercase;
+      transform: rotate(-10deg);
+      background: rgba(185, 28, 28, 0.12);
+    }
+    .style-2-frame-polaroid {
+      background: #fdfbf7;
+      padding: 5px 5px 14px;
+      box-shadow: 3px 5px 15px rgba(0,0,0,0.6);
+      width: 105px;
+    }
+    .style-2-frame-polaroid img { width: 100%; height: 75px; object-fit: cover; filter: sepia(0.5); }
+    .style-2-frame-polaroid div { font-family: 'Courier Prime', monospace; font-size: 9px; color: #333; text-align: center; margin-top: 3px; font-weight: 700; }
+
+    /* ========================================================
+       🌿 STYLE 3: COZY SOFT WELLNESS (Warm Journal)
+    ======================================================== */
+    .style-3-frame {
+      background: #1a1715;
+      color: #fafaf9;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .style-3-frame .frame-logo { font-family: 'Gamja Flower', cursive; font-size: 20px; color: #facc15; }
+    .style-3-frame .frame-streak-pill { background: rgba(250, 204, 21, 0.15); color: #facc15; border-radius: 20px; }
+    .style-3-frame .mini-date-chip { background: #262220; color: #d6d3d1; border-radius: 14px; }
+    .style-3-frame .mini-date-chip.active { background: #facc15; color: #1a1715; }
+    .style-3-frame .frame-canvas-box {
+      background: #231f1d;
+      border: 1px solid rgba(254, 240, 138, 0.2);
+      border-radius: 24px;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 100% 20px;
+    }
+    .style-3-frame .frame-workout-card {
+      background: #2c2826;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+    }
+    .style-3-sticky {
+      background: #fef08a;
+      color: #3f2205;
+      padding: 10px;
+      border-radius: 12px;
+      width: 130px;
+      font-family: 'Gamja Flower', cursive;
+      font-size: 14px;
+      line-height: 1.3;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+    }
+    .style-3-bubble {
+      background: #86efac;
+      color: #064e3b;
+      font-family: 'Gamja Flower', cursive;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* ========================================================
+       📰 STYLE 4: EDITORIAL MAGAZINE (Hypebeast / High-Fashion)
+    ======================================================== */
+    .style-4-frame {
+      background: #000000;
+      color: #ffffff;
+      font-family: 'Pretendard', sans-serif;
+    }
+    .style-4-frame .frame-logo { font-family: 'Syne', sans-serif; color: #fff; letter-spacing: -1px; }
+    .style-4-frame .frame-streak-pill { background: #2563eb; color: #fff; border-radius: 0; font-family: 'Space Grotesk', sans-serif; }
+    .style-4-frame .mini-date-chip { background: #111; color: #a1a1aa; border-radius: 0; border-color: #333; }
+    .style-4-frame .mini-date-chip.active { background: #fff; color: #000; }
+    .style-4-frame .frame-canvas-box {
+      background: #09090b;
+      border: 1px solid #333;
+      border-radius: 0;
+    }
+    .style-4-frame .frame-workout-card {
+      background: #000;
+      border: 1.5px solid #fff;
+      border-radius: 0;
+      box-shadow: 4px 4px 0 #2563eb;
+    }
+    .style-4-headline {
+      background: #fff;
+      color: #000;
+      font-family: 'Syne', sans-serif;
+      font-weight: 900;
+      font-size: 11px;
+      padding: 5px 8px;
+      text-transform: uppercase;
+      box-shadow: 4px 4px 0 #2563eb;
+    }
+    .style-4-barcode {
+      background: #000;
+      border: 1px solid #fff;
+      padding: 6px 8px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 8px;
+      color: #fff;
+      width: 110px;
+    }
+    .style-4-barlines {
+      height: 12px;
+      background: repeating-linear-gradient(90deg, #fff 0, #fff 2px, transparent 2px, transparent 4px);
+      margin: 3px 0;
+    }
+
+    /* Vote / Select Button */
+    .vote-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #182234;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .vote-btn:hover { background: #2563eb; border-color: #2563eb; transform: scale(1.02); }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <div class="showcase-header">
+    <div class="header-badge">Design Mood Comparison</div>
+    <h1 class="header-title">4대 디자인 스타일 한눈에 비교하기</h1>
+    <p class="header-sub">네온을 걷어내고 운동일지의 본질과 감성을 살린 4가지 무드를 나란히 비교해 보세요. (스티커를 직접 드래그해볼 수 있습니다)</p>
+  </div>
+
+  <!-- 4-Column Side-by-Side Comparison Container -->
+  <div class="comparison-grid">
+
+    <!-- ==================== COLUMN 1 ==================== -->
+    <div class="style-card-column">
+      <div class="column-title-box">
+        <div class="col-num-title">
+          <span>1. 클린 애슬레틱</span>
+          <span class="col-vibe-tag" style="color: #ff5e36;">Nike & Apple</span>
+        </div>
+        <p class="col-target-desc">미니멀리즘 + 티타늄 오렌지 포인트. 군더더기 없는 데이터 중심 기록.</p>
+      </div>
+
+      <!-- Phone Mockup 1 -->
+      <div class="mockup-frame style-1-frame">
+        <div class="frame-app-header">
+          <div class="frame-logo">RUTI ATHLETIC</div>
+          <div class="frame-streak-pill">🔥 14 DAYS</div>
+        </div>
+        <div class="frame-date-bar">
+          <div class="mini-date-chip"><span>금</span><span>15</span></div>
+          <div class="mini-date-chip"><span>토</span><span>16</span></div>
+          <div class="mini-date-chip"><span>월</span><span>17</span></div>
+          <div class="mini-date-chip active"><span>오늘</span><span>18</span></div>
+          <div class="mini-date-chip"><span>수</span><span>19</span></div>
+        </div>
+        <div class="frame-body">
+          <div class="frame-canvas-box">
+            <div class="frame-workout-card">
+              <div class="card-title-row">
+                <span class="card-title-text">벤치프레스</span>
+                <span style="font-size:10px; color:#ff5e36; font-weight:800;">PR 70KG ★</span>
+              </div>
+              <div class="card-set-row"><span>1세트 (웜업)</span><span>빈봉 x 15</span></div>
+              <div class="card-set-row"><span>2세트</span><span>40kg x 12</span></div>
+              <div class="card-set-row"><span>3세트</span><span>60kg x 10</span></div>
+              <div class="card-set-row" style="color:#fff; font-weight:700;"><span>4세트 (PR)</span><span>70kg x 6회 🔥</span></div>
+            </div>
+
+            <!-- Draggables -->
+            <div class="draggable-obj" style="top: 175px; left: 16px; transform: rotate(-3deg);">
+              <div class="style-1-badge">★ NEW PR : 70KG</div>
+            </div>
+            <div class="draggable-obj" style="top: 220px; left: 150px; transform: rotate(4deg);">
+              <div class="style-1-pill">VOL <strong>3,450kg</strong></div>
+            </div>
+            <div class="draggable-obj" style="top: 290px; left: 20px; transform: rotate(1deg);">
+              <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); padding: 8px 10px; border-radius: 10px; font-size: 10px; color: #cbd5e1; width: 140px;">
+                "가슴 상부 펌핑 대박. 다음 주 75kg 도전!"
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="vote-btn" onclick="selectStyle('1. 클린 애슬레틱 (Nike/Apple 스타일)')">👉 이 스타일 선택하기</button>
+    </div>
+
+    <!-- ==================== COLUMN 2 ==================== -->
+    <div class="style-card-column">
+      <div class="column-title-box">
+        <div class="col-num-title">
+          <span>2. 빈티지 골드짐</span>
+          <span class="col-vibe-tag" style="color: #d4af37;">Old-School</span>
+        </div>
+        <p class="col-target-desc">70-90s 골든 에라 보디빌딩. 크라프트지/가죽 + 버건디 고무 스탬프.</p>
+      </div>
+
+      <!-- Phone Mockup 2 -->
+      <div class="mockup-frame style-2-frame">
+        <div class="frame-app-header">
+          <div class="frame-logo">RUTI GYM CLUB</div>
+          <div class="frame-streak-pill">EST. 2026</div>
+        </div>
+        <div class="frame-date-bar">
+          <div class="mini-date-chip"><span>15</span></div>
+          <div class="mini-date-chip"><span>16</span></div>
+          <div class="mini-date-chip"><span>17</span></div>
+          <div class="mini-date-chip active"><span>AUG 18</span></div>
+          <div class="mini-date-chip"><span>19</span></div>
+        </div>
+        <div class="frame-body">
+          <div class="frame-canvas-box">
+            <div class="frame-workout-card">
+              <div class="card-title-row" style="border-bottom-color: #d4af37;">
+                <span class="card-title-text" style="font-family:'Cinzel', serif;">BENCH PRESS</span>
+                <span style="font-size:10px; color:#d4af37;">70KG MAX</span>
+              </div>
+              <div class="card-set-row"><span>SET 01 (WARM)</span><span>EMPTY BAR x 15</span></div>
+              <div class="card-set-row"><span>SET 02</span><span>40KG x 12</span></div>
+              <div class="card-set-row"><span>SET 03</span><span>60KG x 10</span></div>
+              <div class="card-set-row" style="color:#d4af37; font-weight:700;"><span>SET 04 (PR)</span><span>70KG x 6 REPS</span></div>
+            </div>
+
+            <!-- Draggables -->
+            <div class="draggable-obj" style="top: 170px; left: 140px; transform: rotate(12deg);">
+              <div class="style-2-stamp">[ CERTIFIED HEAVY ]</div>
+            </div>
+            <div class="draggable-obj" style="top: 210px; left: 14px; transform: rotate(-5deg);">
+              <div class="style-2-frame-polaroid">
+                <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=200&auto=format&fit=crop&q=60" alt="Vintage Photo">
+                <div>1986.08.18 PUMP</div>
+              </div>
+            </div>
+            <div class="draggable-obj" style="top: 310px; left: 135px; transform: rotate(-6deg);">
+              <div class="style-2-stamp" style="border-color: #d4af37; color: #d4af37; background: rgba(212,175,55,0.1);">★ NO PAIN NO GAIN ★</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="vote-btn" onclick="selectStyle('2. 빈티지 골드짐 (Old-School 레트로)')">👉 이 스타일 선택하기</button>
+    </div>
+
+    <!-- ==================== COLUMN 3 ==================== -->
+    <div class="style-card-column">
+      <div class="column-title-box">
+        <div class="col-num-title">
+          <span>3. 코지 웰니스</span>
+          <span class="col-vibe-tag" style="color: #facc15;">Soft Journal</span>
+        </div>
+        <p class="col-target-desc">포근한 일기장 + 버터 옐로우 포스트잇 + 손글씨와 귀여운 스티커.</p>
+      </div>
+
+      <!-- Phone Mockup 3 -->
+      <div class="mockup-frame style-3-frame">
+        <div class="frame-app-header">
+          <div class="frame-logo">루티의 운동일기 💛</div>
+          <div class="frame-streak-pill">오운완 D+14</div>
+        </div>
+        <div class="frame-date-bar">
+          <div class="mini-date-chip"><span>15일</span></div>
+          <div class="mini-date-chip"><span>16일</span></div>
+          <div class="mini-date-chip"><span>17일</span></div>
+          <div class="mini-date-chip active"><span>오늘 18일</span></div>
+          <div class="mini-date-chip"><span>19일</span></div>
+        </div>
+        <div class="frame-body">
+          <div class="frame-canvas-box">
+            <div class="frame-workout-card">
+              <div class="card-title-row">
+                <span class="card-title-text" style="font-family:'Gamja Flower', cursive; font-size:16px;">벤치프레스 기록 ✨</span>
+                <span style="font-size:10px; color:#facc15; font-weight:800;">70kg 달성!</span>
+              </div>
+              <div class="card-set-row"><span>1세트 (빈봉)</span><span>15회 웜업</span></div>
+              <div class="card-set-row"><span>2세트</span><span>40kg x 12회</span></div>
+              <div class="card-set-row"><span>3세트</span><span>60kg x 10회</span></div>
+              <div class="card-set-row" style="color:#facc15; font-weight:700;"><span>4세트 (최고기록)</span><span>70kg x 6회 🎉</span></div>
+            </div>
+
+            <!-- Draggables -->
+            <div class="draggable-obj" style="top: 175px; left: 14px; transform: rotate(-4deg);">
+              <div class="style-3-sticky">
+                오늘 70kg 성공!! 💛<br>
+                자극 잘 왔다 ㅎㅎ<br>
+                푹 쉬고 득근하기 💤
+              </div>
+            </div>
+            <div class="draggable-obj" style="top: 190px; left: 160px; transform: rotate(6deg);">
+              <div class="style-3-bubble">🎀 가슴운동 완료!</div>
+            </div>
+            <div class="draggable-obj" style="top: 260px; left: 165px; transform: rotate(-8deg);">
+              <div class="style-3-bubble" style="background:#86efac; color:#064e3b;">🌱 득근득근 D+14</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="vote-btn" onclick="selectStyle('3. 코지 웰니스 (Soft Pastel 감성)')">👉 이 스타일 선택하기</button>
+    </div>
+
+    <!-- ==================== COLUMN 4 ==================== -->
+    <div class="style-card-column">
+      <div class="column-title-box">
+        <div class="col-num-title">
+          <span>4. 에디토리얼</span>
+          <span class="col-vibe-tag" style="color: #38bdf8;">Hypebeast/GQ</span>
+        </div>
+        <p class="col-target-desc">블랙&화이트 모노크롬 + 코발트 블루 + 볼드 타이포와 바코드.</p>
+      </div>
+
+      <!-- Phone Mockup 4 -->
+      <div class="mockup-frame style-4-frame">
+        <div class="frame-app-header">
+          <div class="frame-logo">RUTI / ISSUE.08</div>
+          <div class="frame-streak-pill">VOL.26</div>
+        </div>
+        <div class="frame-date-bar">
+          <div class="mini-date-chip"><span>15</span></div>
+          <div class="mini-date-chip"><span>16</span></div>
+          <div class="mini-date-chip"><span>17</span></div>
+          <div class="mini-date-chip active"><span>18 TUE</span></div>
+          <div class="mini-date-chip"><span>19</span></div>
+        </div>
+        <div class="frame-body">
+          <div class="frame-canvas-box">
+            <div class="frame-workout-card">
+              <div class="card-title-row" style="border-bottom-color:#fff;">
+                <span class="card-title-text" style="font-family:'Syne', sans-serif;">BENCH PRESS</span>
+                <span style="font-size:10px; color:#2563eb; font-weight:900;">70KG / PR</span>
+              </div>
+              <div class="card-set-row"><span>SET 01</span><span>EMPTY BAR x 15</span></div>
+              <div class="card-set-row"><span>SET 02</span><span>40KG x 12</span></div>
+              <div class="card-set-row"><span>SET 03</span><span>60KG x 10</span></div>
+              <div class="card-set-row" style="color:#fff; font-weight:900;"><span>SET 04 (NEW)</span><span>70KG x 6 REPS</span></div>
+            </div>
+
+            <!-- Draggables -->
+            <div class="draggable-obj" style="top: 175px; left: 14px; transform: rotate(-2deg);">
+              <div class="style-4-headline">RECORD BREAKER / 70KG</div>
+            </div>
+            <div class="draggable-obj" style="top: 220px; left: 165px; transform: rotate(5deg);">
+              <div class="style-4-barcode">
+                <div>SESSION: 08-18</div>
+                <div class="style-4-barlines"></div>
+                <div>#100%_RAW_MUSCLE</div>
+              </div>
+            </div>
+            <div class="draggable-obj" style="top: 310px; left: 20px; transform: rotate(-3deg);">
+              <div class="style-4-headline" style="background:#2563eb; color:#fff; box-shadow:4px 4px 0 #fff;">NO DAYS OFF ®</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="vote-btn" onclick="selectStyle('4. 에디토리얼 매거진 (Hypebeast 룩)')">👉 이 스타일 선택하기</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Universal Drag Engine for all 4 frames
+    document.querySelectorAll('.draggable-obj').forEach(el => {
+      let isDragging = false;
+      let startX, startY, startLeft, startTop;
+
+      el.addEventListener('pointerdown', (e) => {
+        e.stopPropagation();
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = el.offsetLeft;
+        startTop = el.offsetTop;
+        el.setPointerCapture(e.pointerId);
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        el.style.left = (startLeft + (e.clientX - startX)) + 'px';
+        el.style.top = (startTop + (e.clientY - startY)) + 'px';
+      });
+
+      el.addEventListener('pointerup', () => { isDragging = false; });
+    });
+
+    function selectStyle(name) {
+      alert(`[선택 완료] '${name}' 스타일을 마음에 들어하셨군요! 🎉\n이 스타일을 기반으로 실제 앱 UI를 구축하겠습니다.`);
+    }
+  </script>
+</body>
+</html>

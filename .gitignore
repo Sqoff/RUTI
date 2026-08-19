@@ -24,3 +24,12 @@ dist-ssr
 *.sw?
 /.claude
 /.omc
+
+# Android & Capacitor Build Outputs
+android/.gradle
+android/build
+android/app/build
+android/captures
+*.apk
+*.aab
+release-output

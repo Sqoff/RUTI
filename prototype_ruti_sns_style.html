@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>RUTI - 트렌디 SNS 스타일 운동 다이어리</title>
+  <!-- Google Fonts: Space Grotesk, Space Mono (영수증), Syne (볼드 디스플레이), Gamja Flower -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Pretendard:wght@400;600;700;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --surface-1: #0f131c;
+      --surface-2: #18202f;
+      --surface-3: #222d42;
+      --neon-lime: #ccff00;
+      --neon-pink: #ff2a85;
+      --neon-cyan: #00f0ff;
+      --neon-purple: #a855f7;
+      --text-main: #f8fafc;
+      --text-muted: #8e9bb0;
+      --text-dim: #505d73;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(204, 255, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #020305;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* Mobile Viewport Container */
+    .app-viewport {
+      width: 100%;
+      max-width: 440px;
+      height: 100vh;
+      max-height: 920px;
+      background: var(--bg-dark);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      border-radius: 40px;
+    }
+
+    @media (max-width: 480px) {
+      .app-viewport {
+        max-width: 100vw;
+        max-height: 100vh;
+        height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* Top Social Header */
+    .social-top-bar {
+      padding: 16px 18px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 40;
+      background: linear-gradient(180deg, var(--bg-dark) 70%, transparent);
+    }
+
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      position: relative;
+    }
+
+    .brand-logo::after {
+      content: '●';
+      color: var(--neon-lime);
+      font-size: 10px;
+      margin-left: 3px;
+      vertical-align: super;
+    }
+
+    .streak-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 42, 133, 0.15);
+      border: 1px solid rgba(255, 42, 133, 0.35);
+      color: #ff5e9c;
+      padding: 4px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .streak-badge span {
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .header-icons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-circle:hover {
+      background: var(--surface-2);
+      border-color: var(--neon-lime);
+      color: var(--neon-lime);
+    }
+    .btn-circle:active { transform: scale(0.92); }
+
+    /* ========================================================
+       🔥 INSTA-STYLE STORY RING BAR (상단 데일리 스토리 링)
+    ======================================================== */
+    .story-feed-section {
+      padding: 4px 16px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: var(--bg-dark);
+      z-index: 35;
+    }
+
+    .story-feed-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 4px 2px;
+    }
+    .story-feed-scroll::-webkit-scrollbar { display: none; }
+
+    .story-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .story-ring {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .story-chip:active .story-ring { transform: scale(0.93); }
+
+    /* Ring Gradients */
+    .story-ring.active-neon {
+      background: linear-gradient(135deg, var(--neon-lime), #00f0ff, var(--neon-pink));
+      padding: 2.5px;
+      box-shadow: 0 0 14px rgba(204, 255, 0, 0.25);
+    }
+
+    .story-ring.active-pink {
+      background: linear-gradient(135deg, #ff2a85, #ff7a00);
+      padding: 2.5px;
+    }
+
+    .story-ring.inactive {
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .story-inner-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--surface-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .story-chip.selected .story-ring {
+      box-shadow: 0 0 0 2.5px var(--bg-dark), 0 0 0 4.5px #fff;
+    }
+
+    .story-date-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .story-chip.selected .story-date-label {
+      color: var(--neon-lime);
+      font-weight: 800;
+    }
+
+    /* Main Scrollable Canvas Area */
+    .main-stream {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 12px 16px 100px;
+      position: relative;
+      scrollbar-width: none;
+    }
+    .main-stream::-webkit-scrollbar { display: none; }
+
+    /* Canvas Action Header */
+    .canvas-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .canvas-title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .canvas-date {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .canvas-tag {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--neon-lime);
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* Theme Switcher Pills */
+    .theme-switch-row {
+      display: flex;
+      gap: 4px;
+      background: var(--surface-1);
+      padding: 3px;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .theme-btn {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .theme-btn.active {
+      background: var(--surface-3);
+      color: #fff;
+    }
+
+    /* ========================================================
+       🎨 SCRAPBOOK DECO CANVAS (핀터레스트/SNS 캔버스)
+    ======================================================== */
+    .scrapbook-canvas {
+      width: 100%;
+      min-height: 520px;
+      position: relative;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Theme Styles */
+    .scrapbook-canvas.theme-street-dark {
+      background-color: #0b0f19;
+      background-image: 
+        radial-gradient(rgba(204, 255, 0, 0.08) 1px, transparent 1px),
+        radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+    }
+
+    .scrapbook-canvas.theme-neon-grid {
+      background-color: #060911;
+      background-image: 
+        linear-gradient(rgba(0, 240, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.07) 1px, transparent 1px);
+      background-size: 22px 22px;
+    }
+
+    .scrapbook-canvas.theme-vintage-kraft {
+      background-color: #1a1510;
+      background-image: repeating-linear-gradient(45deg, #201a14 0, #201a14 10px, #1a1510 10px, #1a1510 20px);
+    }
+
+    .scrapbook-canvas.theme-minimal-slate {
+      background-color: #0d1117;
+      background-image: linear-gradient(180deg, #0d1117 0%, #05070a 100%);
+    }
+
+    .canvas-inner {
+      position: relative;
+      min-height: 520px;
+      padding: 16px;
+    }
+
+    /* ========================================================
+       🧾 SWEAT RECEIPT (힙한 영수증 스타일 운동일지 카드)
+    ======================================================== */
+    .sweat-receipt {
+      width: 100%;
+      max-width: 250px;
+      background: #fdfdfd;
+      color: #0b0f19;
+      padding: 16px 14px 20px;
+      border-radius: 2px;
+      font-family: 'Space Mono', monospace;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 5;
+    }
+
+    /* Torn Paper Bottom Edge */
+    .sweat-receipt::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0; right: 0;
+      height: 10px;
+      background: radial-gradient(circle, transparent, transparent 50%, #fdfdfd 50%, #fdfdfd 100%);
+      background-size: 14px 14px;
+    }
+
+    .receipt-header {
+      text-align: center;
+      border-bottom: 1.5px dashed #111;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+
+    .receipt-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .receipt-sub {
+      font-size: 9px;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .receipt-items {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .receipt-row.bold {
+      font-weight: 700;
+    }
+
+    .receipt-divider {
+      border-top: 1.5px dashed #111;
+      margin: 8px 0;
+    }
+
+    .receipt-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .barcode-wrap {
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .barcode-lines {
+      height: 24px;
+      background: repeating-linear-gradient(90deg, #000 0, #000 2px, transparent 2px, transparent 4px, #000 4px, #000 7px, transparent 7px, transparent 8px);
+      margin: 0 auto;
+      width: 80%;
+    }
+
+    .receipt-stamp-overlay {
+      position: absolute;
+      top: 40px;
+      right: -10px;
+      border: 2px solid #ef4444;
+      color: #ef4444;
+      font-weight: 900;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      transform: rotate(18deg);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: rgba(254, 242, 242, 0.85);
+      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
+    }
+
+    /* ========================================================
+       🎵 SPOTIFY / MUSIC WIDGET STICKER
+    ======================================================== */
+    .music-widget-sticker {
+      width: 190px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .music-cover {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #1db954, #191414);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .music-info {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .music-track {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .music-artist {
+      font-size: 9px;
+      color: var(--neon-lime);
+    }
+
+    .music-wave {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+    }
+    .wave-bar {
+      width: 2.5px;
+      background: var(--neon-lime);
+      border-radius: 2px;
+      animation: wavePulse 1s infinite ease-in-out alternate;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.2s; height: 10px; }
+    .wave-bar:nth-child(3) { animation-delay: 0.4s; height: 14px; }
+    .wave-bar:nth-child(4) { animation-delay: 0.1s; height: 7px; }
+
+    @keyframes wavePulse {
+      0% { height: 4px; }
+      100% { height: 14px; }
+    }
+
+    /* ========================================================
+       📸 BEREAL DUAL-SHOT POLAROID
+    ======================================================== */
+    .bereal-polaroid {
+      background: #000;
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 6px 6px 10px;
+      width: 145px;
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .bereal-main-img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 12px;
+      display: block;
+    }
+
+    .bereal-inset-img {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      border: 2px solid #fff;
+      object-fit: cover;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    }
+
+    .bereal-time-tag {
+      font-size: 10px;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      margin-top: 6px;
+      letter-spacing: -0.2px;
+      font-family: 'Space Mono', monospace;
+    }
+    .bereal-time-tag span { color: var(--neon-lime); }
+
+    /* ========================================================
+       ⭐ Y2K & NEON STICKERS
+    ======================================================== */
+    .sticker-y2k {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 30px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .y2k-neon {
+      background: var(--neon-lime);
+      color: #000;
+      border: 2px solid #000;
+      box-shadow: 4px 4px 0 #000;
+    }
+    .y2k-pink {
+      background: var(--neon-pink);
+      color: #fff;
+      border: 2px solid #fff;
+      box-shadow: 4px 4px 0 #000;
+    }
+    .y2k-silver {
+      background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 50%, #f8fafc 100%);
+      color: #0f172a;
+      border: 1.5px solid #fff;
+      box-shadow: 0 4px 14px rgba(255,255,255,0.25);
+    }
+
+    /* Tape Styles */
+    .neon-tape {
+      width: 100px;
+      height: 20px;
+      background: var(--neon-lime);
+      opacity: 0.85;
+      transform: rotate(-5deg);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    /* Hand Note */
+    .hand-card {
+      background: #1e293b;
+      border-left: 4px solid var(--neon-lime);
+      border-radius: 8px;
+      padding: 10px;
+      color: #f8fafc;
+      font-family: 'Gamja Flower', cursive;
+      font-size: 16px;
+      line-height: 1.3;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      width: 150px;
+    }
+
+    /* Interactive Bounding Box & Handles */
+    .interactive-element {
+      position: absolute;
+      cursor: grab;
+      touch-action: none;
+      transform-origin: center center;
+      transition: box-shadow 0.15s;
+    }
+    .interactive-element:active { cursor: grabbing; }
+
+    .interactive-element.active .box-handles {
+      display: block;
+    }
+
+    .box-handles {
+      display: none;
+      position: absolute;
+      inset: -8px;
+      border: 2px dashed var(--neon-lime);
+      border-radius: 14px;
+      pointer-events: none;
+      box-shadow: 0 0 15px rgba(204, 255, 0, 0.4);
+    }
+
+    .handle-btn {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: #000;
+      border: 1.5px solid var(--neon-lime);
+      color: var(--neon-lime);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+      transition: transform 0.1s;
+    }
+    .handle-btn:hover { transform: scale(1.15); }
+
+    .handle-del { top: -12px; left: -12px; background: #ef4444; border-color: #ef4444; color: #fff; }
+    .handle-flip { top: -12px; right: -12px; }
+    .handle-copy { bottom: -12px; left: -12px; }
+    .handle-scale { bottom: -12px; right: -12px; background: var(--neon-lime); color: #000; cursor: nwse-resize; }
+
+    /* ========================================================
+       🎛️ FLOATING ACTION TOOLBAR
+    ======================================================== */
+    .sns-floating-bar {
+      position: absolute;
+      bottom: 74px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border-highlight);
+      border-radius: 20px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 50;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(204, 255, 0, 0.15);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sns-floating-bar.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sns-tool-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 8px;
+    }
+    .sns-tool-btn:hover { color: var(--neon-lime); }
+    .sns-tool-btn svg { width: 16px; height: 16px; }
+
+    /* ========================================================
+       📂 RIGHT EDGE DRAWER (SNS 소품 보관함)
+    ======================================================== */
+    .edge-drawer-sns {
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 290px;
+      background: rgba(10, 14, 23, 0.98);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-left: 1px solid var(--border-subtle);
+      z-index: 60;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -20px 0 45px rgba(0, 0, 0, 0.8);
+    }
+    .edge-drawer-sns.open { transform: translateX(0); }
+
+    .sns-handle {
+      position: absolute;
+      left: -40px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 76px;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-right: none;
+      border-radius: 18px 0 0 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--neon-lime);
+      box-shadow: -8px 4px 20px rgba(0,0,0,0.6);
+      gap: 4px;
+    }
+    .handle-glow-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--neon-lime);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--neon-lime);
+    }
+
+    .drawer-top {
+      padding: 18px 16px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sns-tab-bar {
+      display: flex;
+      padding: 8px 12px;
+      gap: 6px;
+      border-bottom: 1px solid var(--border-subtle);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .sns-tab-bar::-webkit-scrollbar { display: none; }
+
+    .sns-tab {
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .sns-tab.active {
+      background: var(--surface-2);
+      color: var(--neon-lime);
+      border-color: rgba(204, 255, 0, 0.3);
+    }
+
+    .drawer-items-list {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drawer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .palette-box {
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      min-height: 64px;
+    }
+    .palette-box:hover {
+      border-color: var(--neon-lime);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+    }
+
+    /* Bottom Navigation Bar */
+    .social-bottom-nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 64px;
+      background: rgba(7, 9, 14, 0.95);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 30;
+    }
+
+    .s-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-dim);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .s-nav-item.active { color: var(--neon-lime); }
+    .s-nav-item svg { width: 22px; height: 22px; }
+
+    /* Floating Workout Add Action */
+    .social-fab {
+      position: absolute;
+      bottom: 78px;
+      right: 18px;
+      width: 52px;
+      height: 52px;
+      border-radius: 26px;
+      background: var(--neon-lime);
+      color: #000;
+      border: none;
+      box-shadow: 0 8px 24px rgba(204, 255, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 35;
+      font-weight: 900;
+      transition: transform 0.15s;
+    }
+    .social-fab:active { transform: scale(0.9); }
+
+    /* ========================================================
+       📹 RETRO CAMCORDER / INSTA STORY EXPORT MODAL
+    ======================================================== */
+    .modal-camcorder {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-camcorder.show { display: flex; }
+
+    .story-card-box {
+      width: 100%;
+      max-width: 350px;
+      background: var(--surface-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: 28px;
+      padding: 18px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .camcorder-screen {
+      width: 100%;
+      height: 420px;
+      background: #04060a;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+    }
+
+    /* Camcorder OSD elements */
+    .osd-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .rec-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #ff2a85;
+    }
+    .rec-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff2a85;
+      animation: blink 1s infinite alternate;
+    }
+    @keyframes blink { from { opacity: 1; } to { opacity: 0.2; } }
+
+    .osd-center {
+      text-align: center;
+      margin: auto 0;
+    }
+
+    .osd-bottom {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .action-row-modal {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-action {
+      flex: 1;
+      padding: 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-insta {
+      background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      color: #fff;
+    }
+    .btn-download {
+      background: var(--surface-2);
+      color: #fff;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <!-- Phone Viewport Container -->
+  <div class="app-viewport">
+
+    <!-- Top Header -->
+    <header class="social-top-bar">
+      <div class="brand-logo-wrap">
+        <div class="brand-logo">RUTI</div>
+        <div class="streak-badge">
+          🔥 <span>14일</span> 연속
+        </div>
+      </div>
+      <div class="header-icons">
+        <button class="btn-circle" title="인스타 캠코더 캡처" onclick="openStoryModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        </button>
+        <button class="btn-circle" title="소품함 열기" onclick="toggleSnsDrawer()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="m19 11-8-8-8.6 8.6a2 2 0 0 0 0 2.8l5.2 5.2c.8.8 2 .8 2.8 0L19 11Z"/><path d="m5 2 5 5"/><path d="M2 13h15"/><path d="M22 20a2 2 0 1 1-4 0c0-1.6 1.7-2.4 2-4 .3 1.6 2 2.4 2 4Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ⚡ DAILY STORY RING FEED (인스타 스토리형 날짜 바) -->
+    <section class="story-feed-section">
+      <div class="story-feed-scroll">
+        
+        <div class="story-chip">
+          <div class="story-ring active-pink">
+            <div class="story-inner-circle">💪</div>
+          </div>
+          <span class="story-date-label">8.14 (금)</span>
+        </div>
+
+        <div class="story-chip">
+          <div class="story-ring active-neon">
+            <div class="story-inner-circle">⚡</div>
+          </div>
+          <span class="story-date-label">8.15 (토)</span>
+        </div>
+
+        <div class="story-chip">
+          <div class="story-ring inactive">
+            <div class="story-inner-circle" style="font-size: 11px; color: var(--text-dim);">REST</div>
+          </div>
+          <span class="story-date-label">8.16 (일)</span>
+        </div>
+
+        <div class="story-chip">
+          <div class="story-ring active-pink">
+            <div class="story-inner-circle">💀</div>
+          </div>
+          <span class="story-date-label">8.17 (월)</span>
+        </div>
+
+        <!-- Today (Selected) -->
+        <div class="story-chip selected">
+          <div class="story-ring active-neon">
+            <div class="story-inner-circle">👑</div>
+          </div>
+          <span class="story-date-label">오늘 (화)</span>
+        </div>
+
+        <div class="story-chip">
+          <div class="story-ring inactive">
+            <div class="story-inner-circle" style="font-size: 13px; color: var(--text-dim);">19</div>
+          </div>
+          <span class="story-date-label">8.19 (수)</span>
+        </div>
+
+        <div class="story-chip">
+          <div class="story-ring inactive">
+            <div class="story-inner-circle" style="font-size: 13px; color: var(--text-dim);">20</div>
+          </div>
+          <span class="story-date-label">8.20 (목)</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Main Stream Body -->
+    <main class="main-stream">
+
+      <div class="canvas-bar">
+        <div class="canvas-title-group">
+          <span class="canvas-date">8월 18일 일지</span>
+          <span class="canvas-tag">#CHEST_DAY</span>
+        </div>
+        <div class="theme-switch-row">
+          <button class="theme-btn active" onclick="setSnsTheme('street-dark', this)">스트릿</button>
+          <button class="theme-btn" onclick="setSnsTheme('neon-grid', this)">네온</button>
+          <button class="theme-btn" onclick="setSnsTheme('vintage-kraft', this)">크라프트</button>
+          <button class="theme-btn" onclick="setSnsTheme('minimal-slate', this)">슬레이트</button>
+        </div>
+      </div>
+
+      <!-- 🎨 SCRAPBOOK DECO CANVAS -->
+      <div class="scrapbook-canvas theme-street-dark" id="scrapbookCanvas">
+        <div class="canvas-inner" id="canvasInner">
+
+          <!-- 1. 🧾 SWEAT RECEIPT (영수증 스타일 운동카드) -->
+          <div class="interactive-element" style="top: 14px; left: 14px; transform: rotate(-2deg);" data-type="receipt">
+            <div class="sweat-receipt">
+              <div class="receipt-stamp-overlay">PR CRUSHED!</div>
+              <div class="receipt-header">
+                <div class="receipt-title">*** SWEAT RECEIPT ***</div>
+                <div class="receipt-sub">RUTI FITNESS GYM • 2026.08.18</div>
+              </div>
+              <div class="receipt-items">
+                <div class="receipt-row bold">
+                  <span>BENCH PRESS</span>
+                  <span>70KG x 6</span>
+                </div>
+                <div class="receipt-row">
+                  <span>- WARMUP SET</span>
+                  <span>빈봉 x 15</span>
+                </div>
+                <div class="receipt-row">
+                  <span>- SET 02</span>
+                  <span>40KG x 12</span>
+                </div>
+                <div class="receipt-row">
+                  <span>- SET 03</span>
+                  <span>60KG x 10</span>
+                </div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row bold">
+                  <span>INCLINE DUMBBELL</span>
+                  <span>22KG x 10</span>
+                </div>
+                <div class="receipt-row">
+                  <span>- SET 01</span>
+                  <span>18KG x 12</span>
+                </div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-total">
+                  <span>TOTAL VOLUME</span>
+                  <span>3,450 KG</span>
+                </div>
+                <div class="receipt-row" style="font-size: 9px; color: #666; margin-top: 2px;">
+                  <span>CALORIES BURNED</span>
+                  <span>482 KCAL</span>
+                </div>
+              </div>
+              <div class="barcode-wrap">
+                <div class="barcode-lines"></div>
+                <div style="font-size: 8px; margin-top: 3px; letter-spacing: 2px;">#100%_ORGANIC_MUSCLE</div>
+              </div>
+            </div>
+            <div class="box-handles">
+              <div class="handle-btn handle-del" onclick="deleteSnsItem(this)">✕</div>
+              <div class="handle-btn handle-flip" onclick="flipSnsItem(this)">⤾</div>
+              <div class="handle-btn handle-copy" onclick="cloneSnsItem(this)">🗐</div>
+              <div class="handle-btn handle-scale">⤡</div>
+            </div>
+          </div>
+
+          <!-- 2. 🎵 SPOTIFY MUSIC WIDGET -->
+          <div class="interactive-element" style="top: 20px; left: 195px; transform: rotate(4deg);" data-type="music">
+            <div class="music-widget-sticker">
+              <div class="music-cover">🎧</div>
+              <div class="music-info">
+                <div class="music-track">FE!N (feat. Playboi Carti)</div>
+                <div class="music-artist">Travis Scott</div>
+              </div>
+              <div class="music-wave">
+                <div class="wave-bar" style="height:6px;"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+              </div>
+            </div>
+            <div class="box-handles">
+              <div class="handle-btn handle-del" onclick="deleteSnsItem(this)">✕</div>
+              <div class="handle-btn handle-flip" onclick="flipSnsItem(this)">⤾</div>
+              <div class="handle-btn handle-copy" onclick="cloneSnsItem(this)">🗐</div>
+              <div class="handle-btn handle-scale">⤡</div>
+            </div>
+          </div>
+
+          <!-- 3. 📸 BEREAL DUAL-SHOT PHOTO -->
+          <div class="interactive-element" style="top: 100px; left: 220px; transform: rotate(-5deg);" data-type="bereal">
+            <div class="bereal-polaroid">
+              <img class="bereal-main-img" src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&auto=format&fit=crop&q=60" alt="Mirror Selfie">
+              <img class="bereal-inset-img" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&auto=format&fit=crop&q=60" alt="Gym">
+              <div class="bereal-time-tag">PM 07:42 <span>• 148 BPM</span></div>
+            </div>
+            <div class="box-handles">
+              <div class="handle-btn handle-del" onclick="deleteSnsItem(this)">✕</div>
+              <div class="handle-btn handle-flip" onclick="flipSnsItem(this)">⤾</div>
+              <div class="handle-btn handle-copy" onclick="cloneSnsItem(this)">🗐</div>
+              <div class="handle-btn handle-scale">⤡</div>
+            </div>
+          </div>
+
+          <!-- 4. ⭐ Y2K STICKER (★ O.U.W.A.N ★) -->
+          <div class="interactive-element" style="top: 290px; left: 190px; transform: rotate(8deg);" data-type="sticker">
+            <div class="sticker-y2k y2k-neon">★ O.U.W.A.N ★</div>
+            <div class="box-handles">
+              <div class="handle-btn handle-del" onclick="deleteSnsItem(this)">✕</div>
+              <div class="handle-btn handle-flip" onclick="flipSnsItem(this)">⤾</div>
+              <div class="handle-btn handle-copy" onclick="cloneSnsItem(this)">🗐</div>
+              <div class="handle-btn handle-scale">⤡</div>
+            </div>
+          </div>
+
+          <!-- 5. ⭐ Y2K PINK STICKER -->
+          <div class="interactive-element" style="top: 340px; left: 215px; transform: rotate(-12deg);" data-type="sticker">
+            <div class="sticker-y2k y2k-pink">HYPERTROPHY 🔥</div>
+            <div class="box-handles">
+              <div class="handle-btn handle-del" onclick="deleteSnsItem(this)">✕</div>
+              <div class="handle-btn handle-flip" onclick="flipSnsItem(this)">⤾</div>
+              <div class="handle-btn handle-copy" onclick="cloneSnsItem(this)">🗐</div>
+              <div class="handle-btn handle-scale">⤡</div>
+            </div>
+          </div>
+
+          <!-- 6. 📝 HAND NOTE STICKER -->
+          <div class="interactive-element" style="top: 350px; left: 24px; transform: rotate(3deg);" data-type="note">
+            <div class="hand-card">
+              오늘 벤치 70kg 뚫었다!!<br>
+              가슴 펌핑 미쳤음.. 🖤<br>
+              단백질 쉐이크 2스쿱 꿀꺽
+            </div>
+            <div class="box-handles">
+              <div class="handle-btn handle-del" onclick="deleteSnsItem(this)">✕</div>
+              <div class="handle-btn handle-flip" onclick="flipSnsItem(this)">⤾</div>
+              <div class="handle-btn handle-copy" onclick="cloneSnsItem(this)">🗐</div>
+              <div class="handle-btn handle-scale">⤡</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 🎛️ Floating Action Toolbar -->
+    <div class="sns-floating-bar" id="snsToolbar">
+      <button class="sns-tool-btn" onclick="bringFrontSns()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="m18 15-6-6-6 6"/></svg>
+        <span>맨앞으로</span>
+      </button>
+      <button class="sns-tool-btn" onclick="sendBackSns()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="m6 9 6 6 6-6"/></svg>
+        <span>맨뒤로</span>
+      </button>
+      <button class="sns-tool-btn" onclick="setStampSns()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>스토리 링 지정</span>
+      </button>
+    </div>
+
+    <!-- 📂 SNS Drawer (소품함) -->
+    <aside class="edge-drawer-sns" id="snsDrawer">
+      <div class="sns-handle" onclick="toggleSnsDrawer()">
+        <div class="handle-glow-dot"></div>
+        <span style="font-size: 9px; font-weight: 800; writing-mode: vertical-rl; letter-spacing: 1px;">소품함</span>
+      </div>
+
+      <div class="drawer-top">
+        <span style="font-size: 15px; font-weight: 800; font-family: 'Syne', sans-serif;">STREET DECO PACK</span>
+        <button class="btn-circle" onclick="toggleSnsDrawer()" style="width: 28px; height: 28px; font-size: 12px;">✕</button>
+      </div>
+
+      <div class="sns-tab-bar">
+        <button class="sns-tab active" onclick="switchSnsTab('y2k', this)">Y2K스티커</button>
+        <button class="sns-tab" onclick="switchSnsTab('widget', this)">위젯/BGM</button>
+        <button class="sns-tab" onclick="switchSnsTab('photo', this)">듀얼포토</button>
+        <button class="sns-tab" onclick="switchSnsTab('tape', this)">네온테이프</button>
+      </div>
+
+      <div class="drawer-items-list" id="snsDrawerList">
+        <!-- populated dynamically -->
+      </div>
+    </aside>
+
+    <!-- FAB Button -->
+    <button class="social-fab" title="운동 기록 추가" onclick="alert('바텀시트 운동 세트 기록창이 열립니다!')">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+
+    <!-- Bottom Navigation -->
+    <nav class="social-bottom-nav">
+      <div class="s-nav-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>피드·다꾸</span>
+      </div>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>
+        <span>타이머</span>
+      </div>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        <span>비리얼눈바디</span>
+      </div>
+      <div class="s-nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span>볼륨통계</span>
+      </div>
+    </nav>
+
+    <!-- 📹 RETRO CAMCORDER / INSTA STORY MODAL -->
+    <div class="modal-camcorder" id="storyModal">
+      <div class="story-card-box">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 15px; font-weight: 800; font-family: 'Syne', sans-serif;">INSTA STORY CAM</span>
+          <button class="btn-circle" onclick="closeStoryModal()" style="width: 28px; height: 28px; font-size: 12px;">✕</button>
+        </div>
+
+        <div class="camcorder-screen">
+          <div class="osd-top">
+            <div class="rec-indicator">
+              <div class="rec-dot"></div>
+              <span>REC</span>
+            </div>
+            <span>SP 0:00:24</span>
+            <span>⚡ 98%</span>
+          </div>
+
+          <div class="osd-center">
+            <div style="font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--neon-lime); text-shadow: 0 0 12px var(--neon-lime);">
+              CHEST DAY DONE
+            </div>
+            <div style="font-family: 'Space Mono', monospace; font-size: 13px; color: #fff; margin-top: 6px;">
+              BENCH 70KG • 3,450KG VOLUME
+            </div>
+            <div style="font-size: 32px; margin-top: 8px;">👑 🔥 💪</div>
+          </div>
+
+          <div class="osd-bottom">
+            <span>2026.08.18 19:42</span>
+            <span>RUTI • @sqoff</span>
+          </div>
+        </div>
+
+        <div class="action-row-modal">
+          <button class="btn-action btn-download" onclick="alert('오운완 9:16 이미지가 갤러리에 저장되었습니다! 🎉')">💾 갤러리 저장</button>
+          <button class="btn-action btn-insta" onclick="alert('인스타그램 스토리 공유 화면으로 즉시 연결됩니다!')">📸 인스타 스토리</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Interactive Script -->
+  <script>
+    let activeElem = null;
+    let zIdxCounter = 20;
+
+    function setSnsTheme(theme, btn) {
+      const canvas = document.getElementById('scrapbookCanvas');
+      canvas.className = 'scrapbook-canvas theme-' + theme;
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function toggleSnsDrawer() {
+      document.getElementById('snsDrawer-sns' || 'snsDrawer').classList.toggle('open');
+    }
+
+    function openStoryModal() {
+      document.getElementById('storyModal').classList.add('show');
+    }
+    function closeStoryModal() {
+      document.getElementById('storyModal').classList.remove('show');
+    }
+
+    const SNS_PALETTE = {
+      y2k: [
+        { html: '<div class="sticker-y2k y2k-neon">NO DAYS OFF</div>' },
+        { html: '<div class="sticker-y2k y2k-pink">100% PUMPED</div>' },
+        { html: '<div class="sticker-y2k y2k-silver">GYM RAT ★</div>' },
+        { html: '<div class="sticker-y2k y2k-neon">NEW PR 🎉</div>' },
+        { html: '<div class="sticker-y2k y2k-pink">LEG DAY 💀</div>' },
+        { html: '<div class="sticker-y2k y2k-silver">SWEAT & TEARS</div>' }
+      ],
+      widget: [
+        { html: '<div style="font-size:11px;font-weight:700;color:var(--neon-lime);text-align:center;">🎵 BGM 위젯 추가<br>(Spotify Style)</div>' },
+        { html: '<div style="font-size:11px;font-weight:700;color:#fff;text-align:center;">🧾 추가 영수증<br>(Receipt)</div>' }
+      ],
+      photo: [
+        { html: '<div style="font-size:11px;font-weight:700;color:var(--neon-lime);text-align:center;">📸 비리얼 듀얼샷<br>사진 불러오기</div>' }
+      ],
+      tape: [
+        { html: '<div class="neon-tape"></div>' },
+        { html: '<div class="neon-tape" style="background:var(--neon-pink);"></div>' },
+        { html: '<div class="neon-tape" style="background:var(--neon-cyan);"></div>' }
+      ]
+    };
+
+    function switchSnsTab(tabKey, btn) {
+      document.querySelectorAll('.sns-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderSnsDrawer(tabKey);
+    }
+
+    function renderSnsDrawer(tabKey) {
+      const container = document.getElementById('snsDrawerList');
+      const items = SNS_PALETTE[tabKey] || [];
+      let html = '<div class="drawer-grid">';
+      items.forEach((it, idx) => {
+        html += `
+          <div class="palette-box" onclick="spawnSnsItem('${tabKey}', ${idx})">
+            ${it.html}
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    function spawnSnsItem(tabKey, idx) {
+      const it = SNS_PALETTE[tabKey][idx];
+      const canvas = document.getElementById('canvasInner');
+      const el = document.createElement('div');
+      el.className = 'interactive-element active';
+      el.style.top = '180px';
+      el.style.left = '80px';
+      el.style.zIndex = ++zIdxCounter;
+      el.setAttribute('data-type', tabKey);
+
+      el.innerHTML = `
+        ${it.html}
+        <div class="box-handles">
+          <div class="handle-btn handle-del" onclick="deleteSnsItem(this)">✕</div>
+          <div class="handle-btn handle-flip" onclick="flipSnsItem(this)">⤾</div>
+          <div class="handle-btn handle-copy" onclick="cloneSnsItem(this)">🗐</div>
+          <div class="handle-btn handle-scale">⤡</div>
+        </div>
+      `;
+
+      canvas.appendChild(el);
+      bindSnsEvents(el);
+      selectSnsItem(el);
+      toggleSnsDrawer();
+    }
+
+    function selectSnsItem(el) {
+      if (activeElem && activeElem !== el) {
+        activeElem.classList.remove('active');
+      }
+      activeElem = el;
+      if (el) {
+        el.classList.add('active');
+        document.getElementById('snsToolbar').classList.add('show');
+      } else {
+        document.getElementById('snsToolbar').classList.remove('show');
+      }
+    }
+
+    function deleteSnsItem(btn) {
+      btn.closest('.interactive-element').remove();
+      selectSnsItem(null);
+    }
+
+    function flipSnsItem(btn) {
+      const item = btn.closest('.interactive-element');
+      const flipped = item.getAttribute('data-flipped') === 'true';
+      item.setAttribute('data-flipped', !flipped);
+      item.firstElementChild.style.transform = flipped ? 'scaleX(1)' : 'scaleX(-1)';
+    }
+
+    function cloneSnsItem(btn) {
+      const item = btn.closest('.interactive-element');
+      const clone = item.cloneNode(true);
+      clone.style.top = (parseInt(item.style.top || 0) + 20) + 'px';
+      clone.style.left = (parseInt(item.style.left || 0) + 20) + 'px';
+      clone.style.zIndex = ++zIdxCounter;
+      document.getElementById('canvasInner').appendChild(clone);
+      bindSnsEvents(clone);
+      selectSnsItem(clone);
+    }
+
+    function bringFrontSns() {
+      if (!activeElem) return;
+      activeElem.style.zIndex = ++zIdxCounter;
+    }
+    function sendBackSns() {
+      if (!activeElem) return;
+      activeElem.style.zIndex = 1;
+    }
+    function setStampSns() {
+      if (!activeElem) return;
+      alert('⚡ 오늘 스토리 링의 대표 스티커로 지정되었습니다!');
+    }
+
+    function bindSnsEvents(el) {
+      let isDragging = false;
+      let isTransforming = false;
+      let startX, startY, startLeft, startTop, startAngle, startDist;
+
+      el.addEventListener('pointerdown', (e) => {
+        if (e.target.closest('.handle-btn')) return;
+        e.stopPropagation();
+        selectSnsItem(el);
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = el.offsetLeft;
+        startTop = el.offsetTop;
+        el.setPointerCapture(e.pointerId);
+      });
+
+      const scaleHandle = el.querySelector('.handle-scale');
+      if (scaleHandle) {
+        scaleHandle.addEventListener('pointerdown', (e) => {
+          e.stopPropagation();
+          isTransforming = true;
+          const rect = el.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          startX = e.clientX;
+          startY = e.clientY;
+          startDist = Math.hypot(startX - cx, startY - cy);
+          startAngle = Math.atan2(startY - cy, startX - cx) * 180 / Math.PI;
+          scaleHandle.setPointerCapture(e.pointerId);
+        });
+
+        scaleHandle.addEventListener('pointermove', (e) => {
+          if (!isTransforming) return;
+          e.preventDefault();
+          const rect = el.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const currentDist = Math.hypot(e.clientX - cx, e.clientY - cy);
+          const currentAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI;
+          const scale = Math.max(0.5, currentDist / startDist);
+          const angle = currentAngle - startAngle;
+          el.style.transform = `rotate(${angle}deg) scale(${scale})`;
+        });
+
+        scaleHandle.addEventListener('pointerup', () => { isTransforming = false; });
+      }
+
+      el.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        el.style.left = (startLeft + (e.clientX - startX)) + 'px';
+        el.style.top = (startTop + (e.clientY - startY)) + 'px';
+      });
+
+      el.addEventListener('pointerup', () => { isDragging = false; });
+    }
+
+    document.querySelectorAll('.interactive-element').forEach(bindSnsEvents);
+
+    document.addEventListener('pointerdown', (e) => {
+      if (!e.target.closest('.interactive-element') && !e.target.closest('.sns-floating-bar') && !e.target.closest('.edge-drawer-sns')) {
+        selectSnsItem(null);
+      }
+    });
+
+    renderSnsDrawer('y2k');
+  </script>
+</body>
+</html>

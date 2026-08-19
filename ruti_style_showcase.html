@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>RUTI - 4가지 무드 스타일 디자인 쇼케이스</title>
+  <!-- Google Fonts: Diverse Typographic Identities -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Courier+Prime:wght@400;700&family=Gaegu:wght@400;700&family=Gamja+Flower&family=Inter:wght@400;600;700;800;900&family=Montserrat:ital,wght@0,800;0,900;1,800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Pretendard:wght@400;600;700;800;900&family=Space+Grotesk:wght@600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================================
+       🎨 THEME VARIABLES (4 Distinct Visual Identities)
+    ======================================================== */
+
+    /* 1. Clean Athletic (Nike / Apple Fitness) */
+    .theme-athletic {
+      --app-bg: #0b0f17;
+      --card-bg: #131a26;
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent: #ff5e36; /* Titanium / Electric Orange */
+      --accent-secondary: #38bdf8;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --text-muted: #475569;
+      --canvas-bg: #0f172a;
+      --font-brand: 'Montserrat', 'Pretendard', sans-serif;
+      --font-body: 'Pretendard', -apple-system, sans-serif;
+      --font-deco: 'Inter', sans-serif;
+      --badge-radius: 8px;
+    }
+
+    /* 2. Vintage Old-School Gym (Gold's Gym / Retro Leather) */
+    .theme-vintage {
+      --app-bg: #1c1713;
+      --card-bg: #28211b;
+      --card-border: rgba(212, 175, 55, 0.25);
+      --accent: #d4af37; /* Antique Gold */
+      --accent-secondary: #b91c1c; /* Crimson Stamp */
+      --text-main: #fdf8eb;
+      --text-sub: #c4b5a0;
+      --text-muted: #786b5b;
+      --canvas-bg: #231c16;
+      --font-brand: 'Cinzel', 'Playfair Display', serif;
+      --font-body: 'Pretendard', Georgia, serif;
+      --font-deco: 'Courier Prime', monospace;
+      --badge-radius: 3px;
+    }
+
+    /* 3. Cozy Soft Wellness (Warm Paper / Lifestyle Journal) */
+    .theme-cozy {
+      --app-bg: #1c1917;
+      --card-bg: #292524;
+      --card-border: rgba(254, 240, 138, 0.2);
+      --accent: #facc15; /* Warm Butter Yellow */
+      --accent-secondary: #86efac; /* Soft Mint */
+      --text-main: #fafaf9;
+      --text-sub: #d6d3d1;
+      --text-muted: #78716c;
+      --canvas-bg: #231f1d;
+      --font-brand: 'Gamja Flower', cursive, sans-serif;
+      --font-body: 'Pretendard', sans-serif;
+      --font-deco: 'Gamja Flower', cursive;
+      --badge-radius: 18px;
+    }
+
+    /* 4. Editorial Magazine (Hypebeast / High-Fashion Brutalism) */
+    .theme-editorial {
+      --app-bg: #000000;
+      --card-bg: #111111;
+      --card-border: #333333;
+      --accent: #2563eb; /* Cobalt Blue */
+      --accent-secondary: #ffffff;
+      --text-main: #ffffff;
+      --text-sub: #a1a1aa;
+      --text-muted: #52525b;
+      --canvas-bg: #09090b;
+      --font-brand: 'Syne', 'Playfair Display', serif;
+      --font-body: 'Pretendard', sans-serif;
+      --font-deco: 'Space Grotesk', sans-serif;
+      --badge-radius: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #030407;
+      color: #fff;
+      font-family: 'Pretendard', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 10px;
+      overflow-x: hidden;
+    }
+
+    /* Top Showcase Selector Bar */
+    .showcase-nav-bar {
+      width: 100%;
+      max-width: 480px;
+      margin-bottom: 12px;
+      background: #111622;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 6px;
+      display: flex;
+      gap: 4px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .style-tab-btn {
+      flex: 1;
+      padding: 8px 6px;
+      border-radius: 14px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .style-tab-btn span.tab-icon { font-size: 14px; }
+    .style-tab-btn.active {
+      background: #fff;
+      color: #040711;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.25);
+    }
+
+    /* Concept Description Card */
+    .concept-banner {
+      width: 100%;
+      max-width: 440px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      line-height: 1.45;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .concept-title { font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px; }
+    .concept-tag { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: rgba(255,255,255,0.1); }
+
+    /* ========================================================
+       📱 PHONE VIEWPORT CONTAINER
+    ======================================================== */
+    .phone-container {
+      width: 100%;
+      max-width: 440px;
+      height: 840px;
+      background-color: var(--app-bg);
+      border-radius: 40px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s ease;
+    }
+
+    /* App Header */
+    .app-header {
+      padding: 18px 20px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 30;
+    }
+
+    .app-title-logo {
+      font-family: var(--font-brand);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-pill {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--badge-radius);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--accent);
+    }
+
+    /* Top Date Scroll Bar */
+    .date-stream-bar {
+      padding: 4px 16px 12px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .date-stream-bar::-webkit-scrollbar { display: none; }
+
+    .date-chip {
+      padding: 8px 14px;
+      border-radius: var(--badge-radius);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      min-width: 54px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .date-chip.selected {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      font-weight: 800;
+    }
+    .date-chip.selected .d-day { color: #000; font-weight: 900; }
+    .date-chip .d-name { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+    .date-chip .d-day { font-size: 15px; font-weight: 800; color: var(--text-main); }
+    .date-chip .d-stamp { font-size: 11px; line-height: 1; margin-top: 1px; }
+
+    /* Main Scroll Body */
+    .phone-body {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 14px 16px 90px;
+      scrollbar-width: none;
+    }
+    .phone-body::-webkit-scrollbar { display: none; }
+
+    /* Canvas Head */
+    .canvas-header-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .canvas-meta-date {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-family: var(--font-brand);
+    }
+    .canvas-meta-sub {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ========================================================
+       🎨 INTERACTIVE DECO CANVAS
+    ======================================================== */
+    .theme-canvas {
+      width: 100%;
+      min-height: 520px;
+      border-radius: 28px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      background-color: var(--canvas-bg);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      transition: all 0.3s;
+    }
+
+    /* Canvas Texture Overlays per Theme */
+    .theme-athletic .theme-canvas {
+      background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
+
+    .theme-vintage .theme-canvas {
+      background-color: #201913;
+      background-image: 
+        radial-gradient(#2d231b 15%, transparent 16%),
+        radial-gradient(#2d231b 15%, transparent 16%);
+      background-size: 16px 16px;
+      background-position: 0 0, 8px 8px;
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
+    }
+
+    .theme-cozy .theme-canvas {
+      background-color: #24201e;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .theme-editorial .theme-canvas {
+      background-color: #08080a;
+      background-image: linear-gradient(180deg, #0d0d10 0%, #000000 100%);
+      border-radius: 0;
+      border: 1px solid #333;
+    }
+
+    /* Main Log Card */
+    .main-log-card {
+      position: relative;
+      z-index: 5;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--badge-radius);
+      padding: 16px;
+      margin: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      font-family: var(--font-body);
+    }
+
+    .theme-vintage .main-log-card {
+      border: 1.5px solid #d4af37;
+      background: #2b231c;
+      box-shadow: 4px 4px 0 #120e0b;
+    }
+    .theme-editorial .main-log-card {
+      border: 1px solid #fff;
+      background: #000;
+      border-radius: 0;
+      box-shadow: 6px 6px 0 #2563eb;
+    }
+
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px dashed var(--card-border);
+      padding-bottom: 8px;
+    }
+    .card-ex-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-family: var(--font-brand);
+    }
+    .card-ex-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .set-list-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 5px 0;
+      color: var(--text-sub);
+    }
+    .set-list-row.highlight {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    /* ========================================================
+       🧩 DYNAMIC DECO ITEMS PER STYLE
+    ======================================================== */
+    .interactive-obj {
+      position: absolute;
+      cursor: grab;
+      touch-action: none;
+      transform-origin: center center;
+      transition: box-shadow 0.15s;
+    }
+    .interactive-obj:active { cursor: grabbing; }
+
+    .interactive-obj.active .obj-handles { display: block; }
+
+    .obj-handles {
+      display: none;
+      position: absolute;
+      inset: -6px;
+      border: 2px dashed var(--accent);
+      border-radius: var(--badge-radius);
+      pointer-events: none;
+    }
+
+    .obj-ctrl {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #000;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 900;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .ctrl-del { top: -11px; left: -11px; background: #ef4444; color: #fff; border-color: #ef4444; }
+    .ctrl-flip { top: -11px; right: -11px; }
+    .ctrl-scale { bottom: -11px; right: -11px; background: var(--accent); color: #000; cursor: nwse-resize; }
+
+    /* 1. Athletic Style Elements */
+    .athletic-badge {
+      background: var(--accent);
+      color: #000;
+      font-weight: 900;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      letter-spacing: -0.2px;
+      font-family: 'Montserrat', sans-serif;
+      box-shadow: 0 4px 15px rgba(255, 94, 54, 0.4);
+    }
+
+    .athletic-volume-pill {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .athletic-volume-pill strong { color: var(--accent); font-size: 14px; }
+
+    /* 2. Vintage Old-School Elements */
+    .vintage-stamp-seal {
+      border: 2.5px solid var(--accent-secondary);
+      color: var(--accent-secondary);
+      font-family: 'Courier Prime', monospace;
+      font-weight: 900;
+      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      transform: rotate(-10deg);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: rgba(185, 28, 28, 0.1);
+      box-shadow: 0 2px 8px rgba(185, 28, 28, 0.3);
+    }
+
+    .vintage-photo-frame {
+      background: #fdfbf7;
+      padding: 6px 6px 20px;
+      border-radius: 2px;
+      box-shadow: 4px 6px 18px rgba(0,0,0,0.6);
+      width: 130px;
+    }
+    .vintage-photo-frame img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      filter: sepia(0.4) contrast(1.1);
+    }
+    .vintage-caption {
+      color: #3e332a;
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* 3. Cozy Soft Wellness Elements */
+    .cozy-sticky-note {
+      background: #fef08a;
+      color: #422006;
+      padding: 12px;
+      border-radius: 16px;
+      width: 150px;
+      font-family: 'Gamja Flower', cursive;
+      font-size: 16px;
+      line-height: 1.35;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .cozy-pin {
+      position: absolute;
+      top: -8px; left: 50%;
+      transform: translateX(-50%);
+      width: 16px; height: 16px;
+      background: #ef4444;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .cozy-sticker-bubble {
+      background: var(--accent);
+      color: #000;
+      font-family: 'Gamja Flower', cursive;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
+    }
+
+    /* 4. Editorial Magazine Elements */
+    .editorial-headline-sticker {
+      background: #fff;
+      color: #000;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      padding: 6px 12px;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      box-shadow: 5px 5px 0 #2563eb;
+    }
+
+    .editorial-barcode-box {
+      background: #000;
+      border: 1px solid #fff;
+      padding: 8px 12px;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px;
+      width: 130px;
+    }
+    .editorial-lines {
+      height: 16px;
+      background: repeating-linear-gradient(90deg, #fff 0, #fff 2px, transparent 2px, transparent 4px, #fff 4px, #fff 6px);
+      margin: 4px 0;
+    }
+
+    /* Bottom App Nav */
+    .app-bottom-nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: var(--app-bg);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 20;
+    }
+    .nav-icon-link {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+    }
+    .nav-icon-link.active { color: var(--accent); }
+
+    /* Marketing Insight Section Below Viewport */
+    .marketing-insights-card {
+      width: 100%;
+      max-width: 440px;
+      background: #111622;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 16px;
+      margin-top: 14px;
+      font-size: 13px;
+    }
+    .insight-h4 { font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 6px; color: #94a3b8; }
+    .insight-list li strong { color: #fff; }
+  </style>
+</head>
+<body class="theme-athletic" id="bodyRoot">
+
+  <!-- 1. Top Style Switcher -->
+  <nav class="showcase-nav-bar">
+    <button class="style-tab-btn active" onclick="switchTheme('athletic', this)">
+      <span class="tab-icon">⚡</span>
+      <span>1. 클린 애슬레틱</span>
+    </button>
+    <button class="style-tab-btn" onclick="switchTheme('vintage', this)">
+      <span class="tab-icon">🏆</span>
+      <span>2. 빈티지 골드짐</span>
+    </button>
+    <button class="style-tab-btn" onclick="switchTheme('cozy', this)">
+      <span class="tab-icon">🌿</span>
+      <span>3. 코지 웰니스</span>
+    </button>
+    <button class="style-tab-btn" onclick="switchTheme('editorial', this)">
+      <span class="tab-icon">📰</span>
+      <span>4. 에디토리얼</span>
+    </button>
+  </nav>
+
+  <!-- Concept Banner -->
+  <div class="concept-banner">
+    <div>
+      <div class="concept-title" id="conceptTitle">⚡ 클린 애슬레틱 (Nike & Apple Fitness 감성)</div>
+      <div style="color: var(--text-muted); font-size: 11px; margin-top: 2px;" id="conceptDesc">
+        모던 미니멀리즘 + 티타늄 오렌지 악센트 + 세련된 데이터 시각화
+      </div>
+    </div>
+    <span class="concept-tag" id="conceptTag">2030 직장인/진성 헬스러</span>
+  </div>
+
+  <!-- 2. Phone Viewport Container -->
+  <div class="phone-container">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="app-title-logo" id="logoText">RUTI ATHLETIC</div>
+      <div class="header-pill" id="headerTag">🔥 14 DAYS STREAK</div>
+    </header>
+
+    <!-- Date Stream -->
+    <div class="date-stream-bar">
+      <div class="date-chip">
+        <span class="d-name">금</span>
+        <span class="d-day">14</span>
+        <span class="d-stamp">💪</span>
+      </div>
+      <div class="date-chip">
+        <span class="d-name">토</span>
+        <span class="d-day">15</span>
+        <span class="d-stamp">⚡</span>
+      </div>
+      <div class="date-chip">
+        <span class="d-name">일</span>
+        <span class="d-day">16</span>
+        <span class="d-stamp">💤</span>
+      </div>
+      <div class="date-chip">
+        <span class="d-name">월</span>
+        <span class="d-day">17</span>
+        <span class="d-stamp">💀</span>
+      </div>
+      <div class="date-chip selected">
+        <span class="d-name">오늘</span>
+        <span class="d-day">18</span>
+        <span class="d-stamp">👑</span>
+      </div>
+      <div class="date-chip">
+        <span class="d-name">수</span>
+        <span class="d-day">19</span>
+      </div>
+      <div class="date-chip">
+        <span class="d-name">목</span>
+        <span class="d-day">20</span>
+      </div>
+    </div>
+
+    <!-- Phone Body -->
+    <main class="phone-body">
+
+      <div class="canvas-header-meta">
+        <span class="canvas-meta-date" id="canvasDate">8월 18일 가슴/삼두 루틴</span>
+        <span class="canvas-meta-sub" id="canvasSub">VOLUME 3,450 KG</span>
+      </div>
+
+      <!-- 🎨 INTERACTIVE CANVAS -->
+      <div class="theme-canvas" id="canvasArea">
+
+        <!-- Core Workout Card -->
+        <div class="main-log-card">
+          <div class="card-top-row">
+            <span class="card-ex-name">벤치프레스 (Bench Press)</span>
+            <span class="card-ex-tag">PR 70KG ★</span>
+          </div>
+          <div class="set-list-row">
+            <span>1세트 (Warmup)</span>
+            <span>빈봉 x 15회</span>
+          </div>
+          <div class="set-list-row">
+            <span>2세트</span>
+            <span>40kg x 12회</span>
+          </div>
+          <div class="set-list-row">
+            <span>3세트</span>
+            <span>60kg x 10회</span>
+          </div>
+          <div class="set-list-row highlight">
+            <span>4세트 (NEW PR)</span>
+            <span>70kg x 6회 🔥</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Deco Layer (Changes with Theme) -->
+        <div id="decoDynamicLayer">
+          <!-- Populated by JS for selected theme -->
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="app-bottom-nav">
+      <div class="nav-icon-link active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span>일지</span>
+      </div>
+      <div class="nav-icon-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/></svg>
+        <span>타이머</span>
+      </div>
+      <div class="nav-icon-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/></svg>
+        <span>눈바디</span>
+      </div>
+      <div class="nav-icon-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span>통계</span>
+      </div>
+    </nav>
+
+  </div>
+
+  <!-- 3. Marketing & Design Insights Card -->
+  <div class="marketing-insights-card" id="marketingCard">
+    <div class="insight-h4">📊 시각디자인 및 마케팅 전략 분석</div>
+    <ul class="insight-list" id="insightList">
+      <!-- Injected by JS -->
+    </ul>
+  </div>
+
+  <script>
+    const THEME_CONFIG = {
+      athletic: {
+        title: '⚡ 클린 애슬레틱 (Nike & Apple Fitness 감성)',
+        desc: '모던 미니멀리즘 + 티타늄 오렌지 악센트 + 세련된 데이터 시각화',
+        tag: '2030 직장인 / 진성 헬스러',
+        logo: 'RUTI ATHLETIC',
+        headerTag: '🔥 14 DAYS STREAK',
+        date: '8월 18일 가슴/삼두 루틴',
+        sub: 'VOLUME 3,450 KG',
+        insights: [
+          '<strong>타깃 페르소나:</strong> 군더더기 없는 깔끔한 디자인과 직관적인 운동 수치를 중시하는 사용자.',
+          '<strong>시각 특징:</strong> 딥 차콜 배경, 강렬한 티타늄 오렌지/시안 악센트, 볼드 산세리프 타이포.',
+          '<strong>마케팅 장점:</strong> "프로페셔널하고 질리지 않는 고급 피트니스 앱" 포지셔닝에 최적.'
+        ],
+        decoHTML: `
+          <div class="interactive-obj" style="top: 200px; left: 20px; transform: rotate(-3deg);">
+            <div class="athletic-badge">★ NEW PR : 70KG</div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+          <div class="interactive-obj" style="top: 250px; left: 210px; transform: rotate(4deg);">
+            <div class="athletic-volume-pill">
+              <span>DAILY VOLUME</span>
+              <strong>3,450 kg</strong>
+            </div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+          <div class="interactive-obj" style="top: 330px; left: 30px; transform: rotate(1deg);">
+            <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); padding: 10px 14px; border-radius: 12px; font-size: 12px; color: #cbd5e1; width: 170px;">
+              "오늘 가슴 상부 자극 제대로 먹음. 다음 주 75kg 도전!"
+            </div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+        `
+      },
+      vintage: {
+        title: '🏆 빈티지 골드짐 (Old-School Bodybuilding)',
+        desc: '70-90s 골든 에라 보디빌딩 + 크림/가죽 질감 + 레드 러버 스탬프',
+        tag: '웨이트 매니아 / 오리지널리티',
+        logo: 'RUTI GYM CLUB',
+        headerTag: 'EST. 2026 • HEAVY DUTY',
+        date: 'AUG 18 • CHEST WORKOUT',
+        sub: '100% RAW POWER',
+        insights: [
+          '<strong>타깃 페르소나:</strong> 아놀드 시대의 쇠질 감성과 헤비 듀티 트레이닝을 사랑하는 찐 헬스인.',
+          '<strong>시각 특징:</strong> 웜 크라프트/가죽 톤, 앤틱 골드 & 버건디 고무 스탬프, 클래식 세리프/타자기 폰트.',
+          '<strong>마케팅 장점:</strong> 흔한 모던 앱들 사이에서 독보적인 레트로 아날로그 감성으로 마니아층 강력 락인.'
+        ],
+        decoHTML: `
+          <div class="interactive-obj" style="top: 200px; left: 190px; transform: rotate(12deg);">
+            <div class="vintage-stamp-seal">[ HEAVY WEIGHT CERTIFIED ]</div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+          <div class="interactive-obj" style="top: 240px; left: 24px; transform: rotate(-4deg);">
+            <div class="vintage-photo-frame">
+              <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=300&auto=format&fit=crop&q=60" alt="Vintage Photo">
+              <div class="vintage-caption">1986.08.18 PUMP</div>
+            </div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+          <div class="interactive-obj" style="top: 370px; left: 180px; transform: rotate(-6deg);">
+            <div class="vintage-stamp-seal" style="border-color: #d4af37; color: #d4af37; background: rgba(212,175,55,0.1);">★ NO PAIN NO GAIN ★</div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+        `
+      },
+      cozy: {
+        title: '🌿 코지 파스텔 & 웰니스 (Soft Lifestyle Journal)',
+        desc: '포근한 일기장 + 버터 옐로우/세이지 그린 + 귀여운 손글씨 메모',
+        tag: '헬스/필라테스/러닝 감성 기록족',
+        logo: '루티의 운동일기 💛',
+        headerTag: '오늘도 오운완 완료!',
+        date: '8월 18일 화요일 ☁️',
+        sub: '오늘의 기분 : 최고! 🎉',
+        insights: [
+          '<strong>타깃 페르소나:</strong> 운동을 자신의 라이프스타일과 힐링 루틴으로 기록하고 아기자기하게 꾸미고 싶은 사용자.',
+          '<strong>시각 특징:</strong> 따뜻한 웜그레이/오트밀 배경, 버터 옐로우 포스트잇, 손글씨 폰트, 말랑한 라운드 뱃지.',
+          '<strong>마케팅 장점:</strong> 딱딱하고 거친 헬스 앱의 진입장벽을 낮춰 여성 및 초보자 유입 극대화.'
+        ],
+        decoHTML: `
+          <div class="interactive-obj" style="top: 210px; left: 20px; transform: rotate(-4deg);">
+            <div class="cozy-sticky-note">
+              <div class="cozy-pin"></div>
+              오늘 벤치 70kg 성공!! ✨<br>
+              가슴 자극 넘 잘 왔다 ㅎㅎ<br>
+              단백질 쉐이크 마시고 꿀잠 자기 💤
+            </div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+          <div class="interactive-obj" style="top: 220px; left: 200px; transform: rotate(6deg);">
+            <div class="cozy-sticker-bubble">🎀 가슴 운동 완료!</div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+          <div class="interactive-obj" style="top: 300px; left: 210px; transform: rotate(-8deg);">
+            <div class="cozy-sticker-bubble" style="background:#86efac;">🌱 득근득근 D+14</div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+        `
+      },
+      editorial: {
+        title: '📰 에디토리얼 & 매거진 (Hypebeast / High-Fashion)',
+        desc: '볼드 타이포그래피 + 흑백 모노크롬 + 코발트 블루 포인트',
+        tag: '트렌드세터 / 패션·디자인 선호층',
+        logo: 'RUTI / ISSUE.08',
+        headerTag: 'VOL. 2026',
+        date: 'TUE 18.08 / DAILY LOG',
+        sub: 'CODE: CHEST_HYPERTROPHY',
+        insights: [
+          '<strong>타깃 페르소나:</strong> 패션 매거진이나 브랜드 룩북 감성을 선호하는 트렌디한 2030 남녀.',
+          '<strong>시각 특징:</strong> 하이 콘트라스트 블랙&화이트, 샤프한 직선 그리드, 코발트 블루 악센트, 바코드 오브제.',
+          '<strong>마케팅 장점:</strong> SNS 공유 시 인스타 피드 무드와 완벽히 어우러져 바이럴 파급력 극대화.'
+        ],
+        decoHTML: `
+          <div class="interactive-obj" style="top: 200px; left: 20px; transform: rotate(-2deg);">
+            <div class="editorial-headline-sticker">RECORD BREAKER / 70KG</div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+          <div class="interactive-obj" style="top: 260px; left: 220px; transform: rotate(5deg);">
+            <div class="editorial-barcode-box">
+              <div>SESSION: 08-18</div>
+              <div class="editorial-lines"></div>
+              <div>#100%_MUSCLE</div>
+            </div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+          <div class="interactive-obj" style="top: 360px; left: 30px; transform: rotate(-3deg);">
+            <div class="editorial-headline-sticker" style="box-shadow: 5px 5px 0 #fff; background:#2563eb; color:#fff;">NO DAYS OFF ®</div>
+            <div class="obj-handles"><div class="obj-ctrl ctrl-del" onclick="delObj(this)">✕</div><div class="obj-ctrl ctrl-scale">⤡</div></div>
+          </div>
+        `
+      }
+    };
+
+    function switchTheme(themeKey, btn) {
+      document.querySelectorAll('.style-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const body = document.getElementById('bodyRoot');
+      body.className = 'theme-' + themeKey;
+
+      const conf = THEME_CONFIG[themeKey];
+      document.getElementById('conceptTitle').innerHTML = conf.title;
+      document.getElementById('conceptDesc').innerHTML = conf.desc;
+      document.getElementById('conceptTag').innerHTML = conf.tag;
+      document.getElementById('logoText').innerHTML = conf.logo;
+      document.getElementById('headerTag').innerHTML = conf.headerTag;
+      document.getElementById('canvasDate').innerHTML = conf.date;
+      document.getElementById('canvasSub').innerHTML = conf.sub;
+
+      // Inject Deco Layer
+      const decoLayer = document.getElementById('decoDynamicLayer');
+      decoLayer.innerHTML = conf.decoHTML;
+
+      // Inject Insights
+      const insightList = document.getElementById('insightList');
+      insightList.innerHTML = conf.insights.map(i => `<li>${i}</li>`).join('');
+
+      // Re-bind events to new objects
+      bindEvents();
+    }
+
+    function delObj(btn) {
+      btn.closest('.interactive-obj').remove();
+    }
+
+    let activeObj = null;
+
+    function bindEvents() {
+      document.querySelectorAll('.interactive-obj').forEach(el => {
+        let isDragging = false;
+        let startX, startY, startLeft, startTop;
+
+        el.addEventListener('pointerdown', (e) => {
+          if (e.target.closest('.obj-ctrl')) return;
+          e.stopPropagation();
+
+          if (activeObj && activeObj !== el) activeObj.classList.remove('active');
+          activeObj = el;
+          el.classList.add('active');
+
+          isDragging = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          startLeft = el.offsetLeft;
+          startTop = el.offsetTop;
+          el.setPointerCapture(e.pointerId);
+        });
+
+        el.addEventListener('pointermove', (e) => {
+          if (!isDragging) return;
+          el.style.left = (startLeft + (e.clientX - startX)) + 'px';
+          el.style.top = (startTop + (e.clientY - startY)) + 'px';
+        });
+
+        el.addEventListener('pointerup', () => { isDragging = false; });
+      });
+    }
+
+    document.addEventListener('pointerdown', (e) => {
+      if (!e.target.closest('.interactive-obj')) {
+        if (activeObj) activeObj.classList.remove('active');
+        activeObj = null;
+      }
+    });
+
+    // Initialize Default
+    switchTheme('athletic', document.querySelector('.style-tab-btn.active'));
+  </script>
+</body>
+</html>

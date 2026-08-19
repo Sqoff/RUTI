@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">RUTI</string>
+    <string name="title_activity_main">RUTI</string>
+    <string name="package_name">com.ruti.workout.journal</string>
+    <string name="custom_url_scheme">com.ruti.workout.journal</string>
+</resources>

@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>RUTI - 다꾸형 스마트 운동 일지 UI 프로토타입</title>
+  <!-- Google Fonts: Pretendard & Gamja Flower (감성 손글씨) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-app: #090d16;
+      --surface-1: #131b2e;
+      --surface-2: #1e293b;
+      --surface-3: #2a374f;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --primary: #38bdf8;
+      --primary-hover: #0ea5e9;
+      --accent-pink: #f472b6;
+      --accent-green: #34d399;
+      --accent-yellow: #fbbf24;
+      --accent-purple: #c084fc;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --safe-bottom: env(safe-area-inset-bottom, 16px);
+      --safe-top: env(safe-area-inset-top, 16px);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      background-color: #030712;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* Outer Wrapper for Preview (Mobile Frame vs Fullscreen) */
+    .viewport-wrapper {
+      width: 100%;
+      max-width: 440px;
+      height: 100vh;
+      max-height: 920px;
+      background: var(--bg-app);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      border-radius: 36px;
+    }
+
+    @media (max-width: 480px) {
+      .viewport-wrapper {
+        max-width: 100vw;
+        max-height: 100vh;
+        height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* Top Floating Toolbar (Status & Theme Selector) */
+    .top-bar {
+      padding: 14px 18px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 40;
+      background: linear-gradient(180deg, var(--bg-app) 70%, transparent);
+    }
+
+    .brand-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #fff;
+    }
+
+    .brand-badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface-3);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.94);
+    }
+
+    .icon-btn.primary {
+      background: var(--primary);
+      color: #041327;
+      font-weight: 700;
+      border: none;
+    }
+
+    /* Main Scrollable View */
+    .main-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0 16px 100px;
+      position: relative;
+      scrollbar-width: none;
+    }
+    .main-scroll::-webkit-scrollbar { display: none; }
+
+    /* Calendar Mini Card */
+    .calendar-card {
+      background: var(--surface-1);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .cal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .cal-month {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cal-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .cal-nav button {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+    }
+    .cal-nav button:hover { color: #fff; background: var(--surface-2); }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .cal-cell {
+      height: 38px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-main);
+      position: relative;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .cal-cell:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .cal-cell.other-month {
+      color: var(--text-dim);
+      opacity: 0.35;
+    }
+
+    .cal-cell.selected {
+      background: var(--primary);
+      color: #041327;
+      font-weight: 700;
+    }
+
+    .cal-cell.today:not(.selected) {
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .cal-stamp-icon {
+      font-size: 13px;
+      line-height: 1;
+      position: absolute;
+      bottom: 2px;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
+    }
+
+    /* Date Title Bar with Theme switcher */
+    .date-action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px 2px 10px;
+    }
+
+    .date-heading {
+      font-size: 17px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-selector {
+      display: flex;
+      background: var(--surface-1);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .theme-pill {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .theme-pill.active {
+      background: var(--surface-3);
+      color: #fff;
+    }
+
+    /* ========================================================
+       🎨 DECO CANVAS (다꾸 작업 영역)
+    ======================================================== */
+    .deco-canvas-container {
+      width: 100%;
+      min-height: 480px;
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.6);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* 4 Distinct Diary Themes */
+    .deco-canvas-container.theme-grid-dark {
+      background-color: #0b1329;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .deco-canvas-container.theme-kraft {
+      background-color: #261f18;
+      background-image: radial-gradient(#3a3025 10%, transparent 11%), radial-gradient(#3a3025 10%, transparent 11%);
+      background-size: 18px 18px;
+      background-position: 0 0, 9px 9px;
+    }
+
+    .deco-canvas-container.theme-slate {
+      background-color: #111827;
+      background-image: linear-gradient(180deg, #111827 0%, #030712 100%);
+    }
+
+    .deco-canvas-container.theme-lined {
+      background-color: #172033;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 100% 28px;
+    }
+
+    .deco-canvas-content {
+      position: relative;
+      min-height: 480px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Workout Log Card inside Canvas */
+    .workout-card {
+      background: rgba(19, 27, 46, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+      position: relative;
+      z-index: 5;
+    }
+
+    .workout-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+
+    .workout-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bar-badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .set-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 4px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .set-row:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 6px;
+    }
+
+    .set-idx {
+      font-weight: 600;
+      color: var(--text-dim);
+    }
+
+    .set-val {
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: 0.2px;
+    }
+
+    /* ========================================================
+       🧩 DECO ITEMS (스티커, 마테, 메모, 폴라로이드)
+    ======================================================== */
+    .deco-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .interactive-deco-item {
+      position: absolute;
+      cursor: grab;
+      touch-action: none;
+      transform-origin: center center;
+      pointer-events: auto;
+      transition: box-shadow 0.15s ease;
+      display: inline-block;
+    }
+
+    .interactive-deco-item:active {
+      cursor: grabbing;
+    }
+
+    .interactive-deco-item.active {
+      z-index: 999 !important;
+    }
+
+    .interactive-deco-item.active .deco-bounding-box {
+      display: block;
+    }
+
+    .deco-bounding-box {
+      display: none;
+      position: absolute;
+      inset: -8px;
+      border: 2px dashed var(--primary);
+      border-radius: 12px;
+      pointer-events: none;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Controls around Bounding Box */
+    .deco-ctrl {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: var(--surface-1);
+      border: 1px solid var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      cursor: pointer;
+      pointer-events: auto;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+      transition: transform 0.1s;
+    }
+    .deco-ctrl:hover { transform: scale(1.15); }
+    .deco-ctrl:active { transform: scale(0.9); }
+
+    .ctrl-delete { top: -12px; left: -12px; background: #ef4444; border-color: #ef4444; }
+    .ctrl-flip { top: -12px; right: -12px; }
+    .ctrl-clone { bottom: -12px; left: -12px; }
+    .ctrl-resize { bottom: -12px; right: -12px; cursor: nwse-resize; background: var(--primary); color: #000; font-weight: bold; }
+
+    /* Item Sub-styles */
+    /* 1. Emoji */
+    .deco-emoji {
+      font-size: 38px;
+      line-height: 1;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+    }
+
+    /* 2. Text Stamp */
+    .deco-stamp {
+      font-size: 13px;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .stamp-pr { background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; border: 1.5px solid #fbbf24; }
+    .stamp-done { background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: 1.5px solid #6ee7b7; }
+    .stamp-fire { background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff; border: 1.5px solid #f472b6; }
+    .stamp-rest { background: #334155; color: #cbd5e1; border: 1.5px dashed #64748b; }
+
+    /* 3. Masking Tape */
+    .deco-tape {
+      width: 110px;
+      height: 24px;
+      opacity: 0.9;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      position: relative;
+    }
+    .deco-tape::before, .deco-tape::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 4px;
+      background: var(--bg-app);
+      opacity: 0.2;
+    }
+    .deco-tape::before { left: 0; clip-path: polygon(0 0, 100% 0, 0 100%); }
+    .deco-tape::after { right: 0; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+    .tape-check {
+      background-color: #f472b6;
+      background-image: repeating-linear-gradient(45deg, #ec4899 0, #ec4899 10px, #f472b6 10px, #f472b6 20px);
+    }
+    .tape-stripe {
+      background-color: #38bdf8;
+      background-image: repeating-linear-gradient(-45deg, #0284c7 0, #0284c7 8px, #38bdf8 8px, #38bdf8 16px);
+    }
+    .tape-yellow {
+      background-color: #fbbf24;
+      background-image: radial-gradient(#d97706 15%, transparent 16%);
+      background-size: 8px 8px;
+    }
+
+    /* 4. Sticky Note (감성 메모지) */
+    .deco-note {
+      width: 170px;
+      min-height: 120px;
+      padding: 12px;
+      border-radius: 4px;
+      box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0,0,0,0.2);
+      color: #1e293b;
+      font-family: 'Gamja Flower', cursive, sans-serif;
+      font-size: 17px;
+      line-height: 1.35;
+      position: relative;
+    }
+    .note-yellow { background: #fef08a; border-left: 5px solid #eab308; }
+    .note-pink { background: #fbcfe8; border-left: 5px solid #ec4899; }
+    .note-mint { background: #a7f3d0; border-left: 5px solid #10b981; }
+    .note-dark { background: #1e293b; color: #f8fafc; border-left: 5px solid var(--primary); font-family: 'Pretendard', sans-serif; font-size: 13px; }
+
+    .note-tape-pin {
+      position: absolute;
+      top: -9px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    /* 5. Polaroid Photo */
+    .deco-polaroid {
+      background: #ffffff;
+      padding: 8px 8px 24px;
+      border-radius: 4px;
+      box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0,0,0,0.2);
+      width: 140px;
+    }
+    .polaroid-img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 2px;
+      background: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 11px;
+    }
+    .polaroid-caption {
+      font-family: 'Gamja Flower', cursive, sans-serif;
+      font-size: 14px;
+      color: #334155;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    /* ========================================================
+       🎛️ FLOATING DECO TOOLBAR (Z-Index / Layer controls)
+    ======================================================== */
+    .deco-floating-bar {
+      position: absolute;
+      bottom: 74px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(19, 27, 46, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 18px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 50;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .deco-floating-bar.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .deco-tool-btn {
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 8px;
+    }
+    .deco-tool-btn:hover { background: rgba(255, 255, 255, 0.1); }
+    .deco-tool-btn svg { width: 16px; height: 16px; }
+
+    /* ========================================================
+       📂 RIGHT EDGE DRAWER (스티커 & 소품 팔레트)
+    ======================================================== */
+    .edge-drawer {
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 280px;
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-left: 1px solid var(--border-color);
+      z-index: 60;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -15px 0 35px rgba(0, 0, 0, 0.6);
+    }
+
+    .edge-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-handle {
+      position: absolute;
+      left: -38px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 38px;
+      height: 70px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-color);
+      border-right: none;
+      border-radius: 16px 0 0 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--primary);
+      box-shadow: -6px 4px 15px rgba(0,0,0,0.4);
+      gap: 3px;
+    }
+    .handle-pill {
+      width: 4px;
+      height: 22px;
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    .drawer-header {
+      padding: 18px 16px 12px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .drawer-tabs {
+      display: flex;
+      padding: 10px 14px;
+      gap: 6px;
+      border-bottom: 1px solid var(--border-color);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .drawer-tabs::-webkit-scrollbar { display: none; }
+
+    .drawer-tab-btn {
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .drawer-tab-btn.active {
+      background: var(--surface-2);
+      color: var(--primary);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .drawer-content {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .palette-item {
+      background: var(--surface-2);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .palette-item:hover {
+      background: var(--surface-3);
+      transform: scale(1.05);
+      border-color: var(--primary);
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 64px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 30;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--text-dim);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-link.active {
+      color: var(--primary);
+    }
+    .nav-link svg { width: 22px; height: 22px; }
+
+    /* FAB (Plus) Button */
+    .fab-btn {
+      position: absolute;
+      bottom: 78px;
+      right: 18px;
+      width: 52px;
+      height: 52px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, var(--primary), #0284c7);
+      color: #041327;
+      border: none;
+      box-shadow: 0 10px 25px rgba(56, 189, 248, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 35;
+      transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fab-btn:active { transform: scale(0.92); }
+
+    /* ========================================================
+       📸 INSTA STORY / CAPTURE MODAL
+    ======================================================== */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-overlay.show { display: flex; }
+
+    .capture-modal-card {
+      width: 100%;
+      max-width: 360px;
+      background: var(--surface-1);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .capture-preview-box {
+      width: 100%;
+      height: 380px;
+      background: #0b1329;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 14px;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .story-watermark {
+      position: absolute;
+      bottom: 12px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-primary { background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff; }
+    .btn-secondary { background: var(--surface-2); color: var(--text-main); }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <!-- Main Phone Viewport Container -->
+  <div class="viewport-wrapper">
+
+    <!-- Top Status & Actions -->
+    <header class="top-bar">
+      <div class="brand-title">
+        <span>RUTI</span>
+        <span class="brand-badge">다꾸 운동일지</span>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" title="오운완 인스타 캡처" onclick="openShareModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect width="18" height="18" x="3" y="3" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>
+        </button>
+        <button class="icon-btn" title="스티커 보관함 열기" onclick="toggleDrawer()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m19 11-8-8-8.6 8.6a2 2 0 0 0 0 2.8l5.2 5.2c.8.8 2 .8 2.8 0L19 11Z"/><path d="m5 2 5 5"/><path d="M2 13h15"/><path d="M22 20a2 2 0 1 1-4 0c0-1.6 1.7-2.4 2-4 .3 1.6 2 2.4 2 4Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Scrollable Body -->
+    <main class="main-scroll" id="mainScroll">
+
+      <!-- 📅 캘린더 미니 위젯 -->
+      <section class="calendar-card">
+        <div class="cal-header">
+          <div class="cal-month">2026년 8월 <span style="font-size: 11px; color: var(--text-dim); font-weight: normal;">(스탬프 수집)</span></div>
+          <div class="cal-nav">
+            <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m15 18-6-6 6-6"/></svg></button>
+            <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+        </div>
+        <div class="cal-weekdays">
+          <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-cell other-month">26</div>
+          <div class="cal-cell other-month">27</div>
+          <div class="cal-cell other-month">28</div>
+          <div class="cal-cell other-month">29</div>
+          <div class="cal-cell other-month">30</div>
+          <div class="cal-cell other-month">31</div>
+          <div class="cal-cell">1 <span class="cal-stamp-icon">💪</span></div>
+          <div class="cal-cell">2 <span class="cal-stamp-icon">🔥</span></div>
+          <div class="cal-cell">3</div>
+          <div class="cal-cell">4 <span class="cal-stamp-icon">⚡</span></div>
+          <div class="cal-cell">5 <span class="cal-stamp-icon">👑</span></div>
+          <div class="cal-cell">6</div>
+          <div class="cal-cell">7 <span class="cal-stamp-icon">💦</span></div>
+          <div class="cal-cell">8</div>
+          <div class="cal-cell">9 <span class="cal-stamp-icon">🎯</span></div>
+          <div class="cal-cell">10 <span class="cal-stamp-icon">💪</span></div>
+          <div class="cal-cell">11</div>
+          <div class="cal-cell">12 <span class="cal-stamp-icon">🔥</span></div>
+          <div class="cal-cell">13 <span class="cal-stamp-icon">🌟</span></div>
+          <div class="cal-cell">14</div>
+          <div class="cal-cell">15 <span class="cal-stamp-icon">💪</span></div>
+          <div class="cal-cell">16</div>
+          <div class="cal-cell">17 <span class="cal-stamp-icon">💀</span></div>
+          <div class="cal-cell selected today">18 <span class="cal-stamp-icon">👑</span></div>
+          <div class="cal-cell">19</div>
+          <div class="cal-cell">20</div>
+          <div class="cal-cell">21</div>
+          <div class="cal-cell">22</div>
+        </div>
+      </section>
+
+      <!-- Date & Theme Control Bar -->
+      <div class="date-action-bar">
+        <div class="date-heading">8월 18일 (화) <span style="font-size: 12px; color: var(--accent-green); font-weight: 600;">#오운완</span></div>
+        <div class="theme-selector">
+          <button class="theme-pill active" onclick="setTheme('grid-dark', this)">모눈</button>
+          <button class="theme-pill" onclick="setTheme('kraft', this)">크라프트</button>
+          <button class="theme-pill" onclick="setTheme('slate', this)">다크</button>
+          <button class="theme-pill" onclick="setTheme('lined', this)">줄노트</button>
+        </div>
+      </div>
+
+      <!-- 🎨 DECO CANVAS (다꾸 작업 영역) -->
+      <div class="deco-canvas-container theme-grid-dark" id="decoCanvas">
+        
+        <!-- Background Workout Cards -->
+        <div class="deco-canvas-content">
+          <div class="workout-card">
+            <div class="workout-card-header">
+              <span class="workout-name">벤치프레스 <span class="bar-badge">빈봉 모드</span></span>
+              <span style="font-size: 11px; color: var(--accent-yellow);">🔥 최고기록 경신</span>
+            </div>
+            <div class="set-row">
+              <span class="set-idx">1세트 (웜업)</span>
+              <span class="set-val">빈봉 x 15회</span>
+            </div>
+            <div class="set-row">
+              <span class="set-idx">2세트</span>
+              <span class="set-val">40kg x 12회</span>
+            </div>
+            <div class="set-row">
+              <span class="set-idx">3세트</span>
+              <span class="set-val">60kg x 10회</span>
+            </div>
+            <div class="set-row">
+              <span class="set-idx">4세트 (PR 🎉)</span>
+              <span class="set-val">70kg x 6회</span>
+            </div>
+          </div>
+
+          <div class="workout-card">
+            <div class="workout-card-header">
+              <span class="workout-name">인클라인 덤벨프레스</span>
+              <span style="font-size: 11px; color: var(--text-muted);">가슴 상부</span>
+            </div>
+            <div class="set-row">
+              <span class="set-idx">1세트</span>
+              <span class="set-val">18kg x 12회</span>
+            </div>
+            <div class="set-row">
+              <span class="set-idx">2세트</span>
+              <span class="set-val">22kg x 10회</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🧩 Interactive Deco Items Layer -->
+        <div class="deco-layer" id="decoLayer">
+
+          <!-- 1. Masking Tape Item -->
+          <div class="interactive-deco-item" style="top: 8px; left: 60px; transform: rotate(-3deg);" data-type="tape">
+            <div class="deco-tape tape-check"></div>
+            <div class="deco-bounding-box">
+              <div class="deco-ctrl ctrl-delete" onclick="deleteItem(this)">✕</div>
+              <div class="deco-ctrl ctrl-flip" onclick="flipItem(this)">⤾</div>
+              <div class="deco-ctrl ctrl-clone" onclick="cloneItem(this)">🗐</div>
+              <div class="deco-ctrl ctrl-resize">⤡</div>
+            </div>
+          </div>
+
+          <!-- 2. Sticky Note Item (포스트잇 메모) -->
+          <div class="interactive-deco-item" style="top: 240px; left: 16px; transform: rotate(-4deg);" data-type="note">
+            <div class="deco-note note-yellow">
+              <div class="note-tape-pin"></div>
+              오늘 벤치 70kg 성공!! 🎉<br>
+              가슴 자극 역대급으로 잘 먹었다.<br>
+              내일은 푹 쉬고 등 조지러 가자 💪
+            </div>
+            <div class="deco-bounding-box">
+              <div class="deco-ctrl ctrl-delete" onclick="deleteItem(this)">✕</div>
+              <div class="deco-ctrl ctrl-flip" onclick="flipItem(this)">⤾</div>
+              <div class="deco-ctrl ctrl-clone" onclick="cloneItem(this)">🗐</div>
+              <div class="deco-ctrl ctrl-resize">⤡</div>
+            </div>
+          </div>
+
+          <!-- 3. Polaroid Photo Item (오운완 사진) -->
+          <div class="interactive-deco-item" style="top: 230px; left: 210px; transform: rotate(6deg);" data-type="photo">
+            <div class="deco-polaroid">
+              <img class="polaroid-img" src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&auto=format&fit=crop&q=60" alt="Workout Photo">
+              <div class="polaroid-caption">8/18 오운완 인증 📸</div>
+            </div>
+            <div class="deco-bounding-box">
+              <div class="deco-ctrl ctrl-delete" onclick="deleteItem(this)">✕</div>
+              <div class="deco-ctrl ctrl-flip" onclick="flipItem(this)">⤾</div>
+              <div class="deco-ctrl ctrl-clone" onclick="cloneItem(this)">🗐</div>
+              <div class="deco-ctrl ctrl-resize">⤡</div>
+            </div>
+          </div>
+
+          <!-- 4. Text Stamp Item -->
+          <div class="interactive-deco-item" style="top: 140px; left: 220px; transform: rotate(-8deg);" data-type="stamp">
+            <div class="deco-stamp stamp-pr">👑 NEW PR 달성</div>
+            <div class="deco-bounding-box">
+              <div class="deco-ctrl ctrl-delete" onclick="deleteItem(this)">✕</div>
+              <div class="deco-ctrl ctrl-flip" onclick="flipItem(this)">⤾</div>
+              <div class="deco-ctrl ctrl-clone" onclick="cloneItem(this)">🗐</div>
+              <div class="deco-ctrl ctrl-resize">⤡</div>
+            </div>
+          </div>
+
+          <!-- 5. Emoji Item -->
+          <div class="interactive-deco-item" style="top: 80px; left: 310px; transform: rotate(12deg);" data-type="emoji">
+            <div class="deco-emoji">🔥</div>
+            <div class="deco-bounding-box">
+              <div class="deco-ctrl ctrl-delete" onclick="deleteItem(this)">✕</div>
+              <div class="deco-ctrl ctrl-flip" onclick="flipItem(this)">⤾</div>
+              <div class="deco-ctrl ctrl-clone" onclick="cloneItem(this)">🗐</div>
+              <div class="deco-ctrl ctrl-resize">⤡</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 🎛️ Floating Action Toolbar (아이템 선택 시 노출) -->
+    <div class="deco-floating-bar" id="decoToolbar">
+      <button class="deco-tool-btn" onclick="bringToFront()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m18 15-6-6-6 6"/></svg>
+        <span>맨앞으로</span>
+      </button>
+      <button class="deco-tool-btn" onclick="sendToBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg>
+        <span>맨뒤로</span>
+      </button>
+      <button class="deco-tool-btn" onclick="setRepresentativeStamp()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>달력도장</span>
+      </button>
+    </div>
+
+    <!-- 📂 Right Edge Drawer (소품 & 스티커 보관함) -->
+    <aside class="edge-drawer" id="edgeDrawer">
+      <div class="drawer-handle" onclick="toggleDrawer()">
+        <div class="handle-pill"></div>
+        <span style="font-size: 9px; font-weight: 800; writing-mode: vertical-rl;">소품함</span>
+      </div>
+
+      <div class="drawer-header">
+        <span style="font-size: 15px; font-weight: 800;">🎨 다꾸 소품 보관함</span>
+        <button class="icon-btn" onclick="toggleDrawer()" style="width: 28px; height: 28px;">✕</button>
+      </div>
+
+      <div class="drawer-tabs">
+        <button class="drawer-tab-btn active" onclick="switchDrawerTab('stamp', this)">스탬프</button>
+        <button class="drawer-tab-btn" onclick="switchDrawerTab('emoji', this)">이모지</button>
+        <button class="drawer-tab-btn" onclick="switchDrawerTab('tape', this)">마스킹테이프</button>
+        <button class="drawer-tab-btn" onclick="switchDrawerTab('note', this)">메모지</button>
+        <button class="drawer-tab-btn" onclick="switchDrawerTab('photo', this)">사진추가</button>
+      </div>
+
+      <div class="drawer-content" id="drawerContent">
+        <!-- Will be populated dynamically by JS -->
+      </div>
+    </aside>
+
+    <!-- FAB Button (운동 추가) -->
+    <button class="fab-btn" title="운동 추가" onclick="alert('바텀시트 운동 입력창이 열립니다.')">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <div class="nav-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>홈·다꾸</span>
+      </div>
+      <div class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>
+        <span>운동타이머</span>
+      </div>
+      <div class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        <span>눈바디</span>
+      </div>
+      <div class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span>성장통계</span>
+      </div>
+    </nav>
+
+    <!-- 📸 Insta Story / Card Share Modal -->
+    <div class="modal-overlay" id="shareModal">
+      <div class="capture-modal-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 16px; font-weight: 800;">✨ 오운완 다이어리 캡처</h3>
+          <button class="icon-btn" onclick="closeShareModal()" style="width: 28px; height: 28px;">✕</button>
+        </div>
+
+        <div class="capture-preview-box">
+          <div style="font-size: 12px; color: var(--accent-pink); font-weight: 800; margin-bottom: 6px;">2026.08.18 화요일</div>
+          <div style="font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 12px;">오늘의 운동 & 다이어리</div>
+          <div style="background: rgba(255,255,255,0.08); padding: 12px 18px; border-radius: 12px; text-align: center; margin-bottom: 8px;">
+            <div style="font-size: 13px; font-weight: 700;">벤치프레스 70kg x 6회 🔥</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">인클라인 덤벨프레스 22kg</div>
+          </div>
+          <div style="font-size: 28px; margin: 4px 0;">👑 💪 🔥</div>
+          <div class="story-watermark">RUTI DIARY • @sqoff</div>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="alert('이미지가 갤러리에 저장되었습니다! 🎉')">💾 갤러리 저장</button>
+          <button class="btn btn-primary" onclick="alert('인스타그램 스토리 공유 화면으로 연결됩니다!')">📱 인스타 공유</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Interactive JavaScript Engine -->
+  <script>
+    let activeItem = null;
+    let currentZIndex = 10;
+
+    // Theme Switcher
+    function setTheme(themeName, btn) {
+      const canvas = document.getElementById('decoCanvas');
+      canvas.className = 'deco-canvas-container theme-' + themeName;
+      document.querySelectorAll('.theme-pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // Drawer Toggle
+    function toggleDrawer() {
+      document.getElementById('edgeDrawer').classList.toggle('open');
+    }
+
+    // Drawer Tabs
+    function switchDrawerTab(tabKey, btn) {
+      document.querySelectorAll('.drawer-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderDrawerItems(tabKey);
+    }
+
+    const PALETTE_DATA = {
+      stamp: [
+        { label: '👑 NEW PR', html: '<div class="deco-stamp stamp-pr">👑 NEW PR</div>' },
+        { label: '💪 득근완료', html: '<div class="deco-stamp stamp-done">💪 득근완료</div>' },
+        { label: '🔥 불태웠다', html: '<div class="deco-stamp stamp-fire">🔥 불태웠다</div>' },
+        { label: '🍕 치팅데이', html: '<div class="deco-stamp stamp-fire">🍕 치팅데이</div>' },
+        { label: '💀 근육통', html: '<div class="deco-stamp stamp-rest">💀 근육통</div>' },
+        { label: '💤 꿀휴식', html: '<div class="deco-stamp stamp-rest">💤 꿀휴식</div>' }
+      ],
+      emoji: [
+        { label: '🔥', html: '<div class="deco-emoji">🔥</div>' },
+        { label: '💪', html: '<div class="deco-emoji">💪</div>' },
+        { label: '💦', html: '<div class="deco-emoji">💦</div>' },
+        { label: '🌟', html: '<div class="deco-emoji">🌟</div>' },
+        { label: '💀', html: '<div class="deco-emoji">💀</div>' },
+        { label: '🎯', html: '<div class="deco-emoji">🎯</div>' },
+        { label: '⚡', html: '<div class="deco-emoji">⚡</div>' },
+        { label: '🏆', html: '<div class="deco-emoji">🏆</div>' },
+        { label: '🏋️', html: '<div class="deco-emoji">🏋️</div>' }
+      ],
+      tape: [
+        { label: '핑크체크', html: '<div class="deco-tape tape-check"></div>' },
+        { label: '블루스트라이프', html: '<div class="deco-tape tape-stripe"></div>' },
+        { label: '옐로우도트', html: '<div class="deco-tape tape-yellow"></div>' }
+      ],
+      note: [
+        { label: '옐로우 메모지', html: '<div class="deco-note note-yellow" style="width:100px;min-height:70px;font-size:11px;">오늘 하루도 완벽!</div>' },
+        { label: '핑크 메모지', html: '<div class="deco-note note-pink" style="width:100px;min-height:70px;font-size:11px;">하체 폭파 성공</div>' },
+        { label: '민트 메모지', html: '<div class="deco-note note-mint" style="width:100px;min-height:70px;font-size:11px;">식단 챙겨먹기</div>' }
+      ],
+      photo: [
+        { label: '오운완 폴라로이드', html: '<div style="font-size:11px; font-weight:700; color:var(--primary); text-align:center;">📷 갤러리 사진<br>불러오기</div>' }
+      ]
+    };
+
+    function renderDrawerItems(tabKey) {
+      const container = document.getElementById('drawerContent');
+      const items = PALETTE_DATA[tabKey] || [];
+      
+      let html = '<div class="items-grid">';
+      items.forEach((it, idx) => {
+        html += `
+          <div class="palette-item" onclick="addNewDecoItem('${tabKey}', ${idx})">
+            ${it.html}
+          </div>
+        `;
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // Spawn New Item into Canvas
+    function addNewDecoItem(tabKey, idx) {
+      const itemData = PALETTE_DATA[tabKey][idx];
+      const layer = document.getElementById('decoLayer');
+      
+      const itemEl = document.createElement('div');
+      itemEl.className = 'interactive-deco-item active';
+      itemEl.style.top = '160px';
+      itemEl.style.left = '80px';
+      itemEl.style.zIndex = ++currentZIndex;
+      itemEl.setAttribute('data-type', tabKey);
+
+      let inner = itemData.html;
+      if (tabKey === 'photo') {
+        inner = `
+          <div class="deco-polaroid">
+            <img class="polaroid-img" src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=400&auto=format&fit=crop&q=60" alt="Photo">
+            <div class="polaroid-caption">새로운 인증샷 ✨</div>
+          </div>
+        `;
+      }
+
+      itemEl.innerHTML = `
+        ${inner}
+        <div class="deco-bounding-box">
+          <div class="deco-ctrl ctrl-delete" onclick="deleteItem(this)">✕</div>
+          <div class="deco-ctrl ctrl-flip" onclick="flipItem(this)">⤾</div>
+          <div class="deco-ctrl ctrl-clone" onclick="cloneItem(this)">🗐</div>
+          <div class="deco-ctrl ctrl-resize">⤡</div>
+        </div>
+      `;
+
+      layer.appendChild(itemEl);
+      bindDecoItemEvents(itemEl);
+      selectItem(itemEl);
+      toggleDrawer();
+    }
+
+    // Modal Control
+    function openShareModal() {
+      document.getElementById('shareModal').classList.add('show');
+    }
+    function closeShareModal() {
+      document.getElementById('shareModal').classList.remove('show');
+    }
+
+    // Item Selection & Controls
+    function selectItem(item) {
+      if (activeItem && activeItem !== item) {
+        activeItem.classList.remove('active');
+      }
+      activeItem = item;
+      if (item) {
+        item.classList.add('active');
+        document.getElementById('decoToolbar').classList.add('show');
+      } else {
+        document.getElementById('decoToolbar').classList.remove('show');
+      }
+    }
+
+    function deleteItem(btn) {
+      const item = btn.closest('.interactive-deco-item');
+      item.remove();
+      selectItem(null);
+    }
+
+    function flipItem(btn) {
+      const item = btn.closest('.interactive-deco-item');
+      const isFlipped = item.getAttribute('data-flipped') === 'true';
+      item.setAttribute('data-flipped', !isFlipped);
+      const child = item.firstElementChild;
+      child.style.transform = isFlipped ? 'scaleX(1)' : 'scaleX(-1)';
+    }
+
+    function cloneItem(btn) {
+      const item = btn.closest('.interactive-deco-item');
+      const clone = item.cloneNode(true);
+      const top = parseInt(item.style.top || 0) + 20;
+      const left = parseInt(item.style.left || 0) + 20;
+      clone.style.top = top + 'px';
+      clone.style.left = left + 'px';
+      clone.style.zIndex = ++currentZIndex;
+      document.getElementById('decoLayer').appendChild(clone);
+      bindDecoItemEvents(clone);
+      selectItem(clone);
+    }
+
+    function bringToFront() {
+      if (!activeItem) return;
+      activeItem.style.zIndex = ++currentZIndex;
+    }
+
+    function sendToBack() {
+      if (!activeItem) return;
+      activeItem.style.zIndex = 1;
+    }
+
+    function setRepresentativeStamp() {
+      if (!activeItem) return;
+      alert('🌟 선택한 스티커가 오늘 캘린더의 대표 스탬프로 지정되었습니다!');
+    }
+
+    // Drag, Rotate & Scale Pointer Engine
+    function bindDecoItemEvents(el) {
+      let isDragging = false;
+      let isTransforming = false;
+      let startX, startY, startLeft, startTop, startAngle, startDist, startScale = 1;
+
+      el.addEventListener('pointerdown', (e) => {
+        if (e.target.closest('.deco-ctrl')) return; // handled separately
+        e.stopPropagation();
+        selectItem(el);
+
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = el.offsetLeft;
+        startTop = el.offsetTop;
+        el.setPointerCapture(e.pointerId);
+      });
+
+      // Resize & Rotate Handle
+      const resizeHandle = el.querySelector('.ctrl-resize');
+      if (resizeHandle) {
+        resizeHandle.addEventListener('pointerdown', (e) => {
+          e.stopPropagation();
+          isTransforming = true;
+          const rect = el.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+
+          startX = e.clientX;
+          startY = e.clientY;
+          startDist = Math.hypot(startX - centerX, startY - centerY);
+          startAngle = Math.atan2(startY - centerY, startX - centerX) * 180 / Math.PI;
+
+          resizeHandle.setPointerCapture(e.pointerId);
+        });
+
+        resizeHandle.addEventListener('pointermove', (e) => {
+          if (!isTransforming) return;
+          e.preventDefault();
+          const rect = el.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+
+          const cx = e.clientX;
+          const cy = e.clientY;
+          const currentDist = Math.hypot(cx - centerX, cy - centerY);
+          const currentAngle = Math.atan2(cy - centerY, cx - centerX) * 180 / Math.PI;
+
+          const scaleRatio = currentDist / startDist;
+          const angleDiff = currentAngle - startAngle;
+
+          el.style.transform = `rotate(${angleDiff}deg) scale(${Math.max(0.5, scaleRatio)})`;
+        });
+
+        resizeHandle.addEventListener('pointerup', () => {
+          isTransforming = false;
+        });
+      }
+
+      el.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        el.style.left = `${startLeft + dx}px`;
+        el.style.top = `${startTop + dy}px`;
+      });
+
+      el.addEventListener('pointerup', () => {
+        isDragging = false;
+      });
+    }
+
+    // Initialize all existing items
+    document.querySelectorAll('.interactive-deco-item').forEach(bindDecoItemEvents);
+
+    // Click outside to deselect
+    document.addEventListener('pointerdown', (e) => {
+      if (!e.target.closest('.interactive-deco-item') && !e.target.closest('.deco-floating-bar') && !e.target.closest('.edge-drawer')) {
+        selectItem(null);
+      }
+    });
+
+    // Default Drawer render
+    renderDrawerItems('stamp');
+  </script>
+</body>
+</html>
