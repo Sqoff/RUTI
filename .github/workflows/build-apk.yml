@@ -63,10 +63,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ./RUTI-Workout-Diary.apk
-          tag_name: ${{ github.ref_name == 'main' && 'v1.0.0' || github.ref_name }}
-          name: "RUTI Android App v1.0.0 (오운완 다꾸 에디션)"
+          tag_name: ${{ github.ref_name }}
+          name: "RUTI Android App ${{ github.ref_name }} (오운완 다꾸 에디션)"
           body: |
-            ## 🏋️ RUTI — 스마트 운동 일지 & 다꾸 웹앱 (Android v1.0.0)
+            ## 🏋️ RUTI — 스마트 운동 일지 & 다꾸 웹앱 (Android ${{ github.ref_name }})
 
             프로페셔널 웨이트 트레이닝 기록과 감성 다이어리 꾸미기를 결합한 스마트 피트니스 저널입니다.
 

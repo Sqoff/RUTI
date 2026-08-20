@@ -1002,19 +1002,239 @@
 .tip-header { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; color: #fff; margin-bottom: 4px; }
 .tip-content { font-size: 11px; color: var(--text-sub); line-height: 1.4; }
 
-/* Before/After Card */
-.before-after-card { background: var(--bg-surface-1); border: 1px solid var(--border-card); border-radius: var(--radius-lg); padding: 16px; }
-.ba-header { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 12px; }
-.ba-slider-container { width: 100%; height: 260px; position: relative; border-radius: var(--radius-md); overflow: hidden; }
-.ba-img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-.ba-clip-wrapper { position: absolute; top: 0; left: 0; bottom: 0; overflow: hidden; }
-.ba-range-slider { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: ew-resize; z-index: 10; margin: 0; }
-.ba-divider-line { position: absolute; top: 0; bottom: 0; width: 2px; background: #fff; transform: translateX(-50%); pointer-events: none; }
-.ba-divider-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 24px; height: 24px; border-radius: 50%; background: #fff; color: #000; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.5); }
-.ba-labels-row { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-top: 8px; }
-.label-before { color: var(--text-muted); }
-.label-after { color: var(--primary); }
-.privacy-badge-card { display: flex; align-items: center; gap: 8px; background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.2); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 11px; color: var(--accent-green); }
+/* ========================================================
+   📸 BEFORE & AFTER GALLERY VIEW
+======================================================== */
+.gallery-mode-tabs-row {
+  display: flex;
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+  gap: 4px;
+}
+
+.gallery-mode-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 8px 4px;
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.gallery-mode-btn.active {
+  background: var(--bg-surface-3);
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.before-after-card {
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ba-slider-container {
+  width: 100%;
+  height: 320px;
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #000;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.ba-image-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  user-select: none;
+}
+.ba-image-layer.editable {
+  cursor: grab;
+  touch-action: none;
+}
+.ba-image-layer.editable:active {
+  cursor: grabbing;
+}
+
+.ba-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: transform 0.05s linear;
+}
+
+.editing-guide-overlay {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--border-highlight);
+  color: var(--primary);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  pointer-events: none;
+}
+
+.ba-range-slider {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: ew-resize;
+  z-index: 20;
+  margin: 0;
+  touch-action: none;
+}
+
+.ba-divider-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #fff;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 15;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.ba-divider-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  color: #000;
+  font-size: 11px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+.ba-labels-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ba-label-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ba-label-group.right {
+  justify-content: flex-end;
+}
+
+.label-before {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+.label-after {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.change-photo-mini-btn {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  color: var(--text-sub);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 6px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+}
+.change-photo-mini-btn:hover {
+  border-color: var(--primary);
+  color: #fff;
+}
+
+/* Adjust Toolbar */
+.ba-adjust-control-toolbar {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.adjust-target-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.adjust-tools-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-action-btn {
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  color: var(--text-main);
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tool-action-btn:hover {
+  background: var(--bg-surface-3);
+  color: var(--primary);
+}
+.tool-action-btn.reset {
+  color: var(--secondary);
+}
+
+.zoom-level-text {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  min-width: 36px;
+  text-align: center;
+  font-family: var(--font-mono);
+}
 
 /* Stats Card */
 .pr-highlight-grid { display: flex; gap: 10px; }
