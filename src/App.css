@@ -1256,3 +1256,721 @@
 .chart-day-label { font-size: 10px; font-weight: 700; color: var(--text-muted); margin-top: 6px; }
 .volume-total-footer { display: flex; justify-content: space-between; border-top: 1px dashed var(--border-subtle); padding-top: 12px; margin-top: 12px; font-size: 12px; color: var(--text-sub); }
 .volume-total-footer strong { color: var(--primary); font-size: 14px; }
+
+/* ========================================================
+   🌐 GLOBAL HEADER & SETTINGS BUTTON
+======================================================== */
+.ruti-global-header {
+  height: 52px;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(11, 15, 23, 0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 40;
+}
+
+.header-brand-group {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo {
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+.header-logo .logo-icon {
+  font-size: 20px;
+}
+.mode-sub-tag {
+  font-size: 10px;
+  font-weight: 800;
+  color: #f472b6;
+  background: rgba(244, 114, 182, 0.15);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  margin-left: 4px;
+}
+
+.header-icon-btn {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.header-icon-btn:hover {
+  background: var(--bg-surface-3);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* ========================================================
+   ⚙️ SETTINGS MODAL
+======================================================== */
+.settings-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.settings-modal-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-lg);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.settings-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-modal-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  margin: 0;
+}
+
+.settings-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.settings-section-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-sub);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.mode-selector-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mode-option-card {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mode-option-card:hover {
+  border-color: var(--border-highlight);
+}
+.mode-option-card.active {
+  background: rgba(255, 94, 54, 0.08);
+  border-color: var(--primary);
+  box-shadow: 0 0 15px rgba(255, 94, 54, 0.15);
+}
+.app-container.maternity-theme .mode-option-card.active {
+  background: rgba(244, 114, 182, 0.08);
+  border-color: #f472b6;
+  box-shadow: 0 0 15px rgba(244, 114, 182, 0.2);
+}
+
+.mode-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.mode-icon.workout { color: var(--primary); }
+.mode-icon.maternity { color: #f472b6; }
+.check-icon { color: var(--accent-green); }
+
+.mode-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 4px 0;
+}
+.mode-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.maternity-form {
+  border-top: 1px dashed var(--border-subtle);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.maternity-form-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #f472b6;
+}
+
+.form-input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+.input-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-sub);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.settings-input {
+  width: 100%;
+  background: var(--bg-surface-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 8px 10px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  box-sizing: border-box;
+}
+.settings-input:focus {
+  outline: none;
+  border-color: #f472b6;
+}
+.settings-input.highlight {
+  border-color: #f472b6;
+  background: rgba(244, 114, 182, 0.08);
+}
+
+.save-profile-btn {
+  background: #f472b6;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: opacity 0.15s;
+}
+.save-profile-btn.workout {
+  background: var(--primary);
+  color: #000;
+}
+
+/* ========================================================
+   🤰 MATERNITY VIEW THEME & STYLES
+======================================================== */
+.maternity-theme-container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.maternity-hero-card {
+  background: linear-gradient(135deg, #1e1528 0%, #151020 100%);
+  border: 1px solid rgba(244, 114, 182, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 8px 25px rgba(244, 114, 182, 0.1);
+}
+
+.maternity-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.baby-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #f472b6;
+}
+
+.dday-pill {
+  background: #f472b6;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
+}
+
+.maternity-week-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.week-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.5px;
+}
+
+.trimester-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.15);
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+}
+
+.fetus-size-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  text-align: right;
+}
+
+.fetus-icon-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  display: block;
+}
+
+.fetus-item-badge {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fbcfe8;
+}
+
+.fetus-desc-text {
+  font-size: 11px;
+  color: #e2e8f0;
+  margin: 0;
+  line-height: 1.4;
+  border-top: 1px dashed rgba(244, 114, 182, 0.2);
+  padding-top: 8px;
+}
+
+.maternity-card {
+  background: var(--bg-surface-1);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.weight-stats-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.weight-stat-box {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.weight-stat-box.highlight {
+  border-color: #f472b6;
+  background: rgba(244, 114, 182, 0.06);
+}
+
+.stat-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.stat-main {
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+}
+.stat-main.range {
+  font-size: 11px;
+}
+
+.stat-tag {
+  font-size: 9px;
+  color: var(--text-sub);
+  margin-top: 3px;
+}
+
+.stat-gain {
+  font-size: 10px;
+  font-weight: 800;
+  margin-top: 2px;
+}
+.stat-gain.plus { color: #f472b6; }
+.stat-gain.minus { color: var(--accent-blue); }
+
+.weight-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+}
+.weight-status-banner.optimal {
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  color: var(--accent-green);
+}
+.weight-status-banner.low {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: var(--accent-gold);
+}
+.weight-status-banner.high {
+  background: rgba(255, 94, 54, 0.12);
+  border: 1px solid rgba(255, 94, 54, 0.3);
+  color: var(--primary);
+}
+
+.status-text-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.status-label {
+  font-size: 12px;
+  font-weight: 800;
+}
+.status-desc {
+  font-size: 10px;
+  color: #cbd5e1;
+  margin-top: 1px;
+}
+
+.edit-mini-btn {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  color: var(--text-sub);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.weight-quick-edit-row {
+  display: flex;
+  gap: 8px;
+}
+.quick-weight-input {
+  flex: 1;
+  background: var(--bg-surface-3);
+  border: 1px solid #f472b6;
+  border-radius: var(--radius-xs);
+  padding: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+}
+.quick-save-btn {
+  background: #f472b6;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: 0 16px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Symptoms Section */
+.symptom-tabs-nav {
+  display: flex;
+  gap: 6px;
+}
+
+.symptom-tab-btn {
+  flex: 1;
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.symptom-tab-btn.active {
+  background: rgba(244, 114, 182, 0.15);
+  border-color: #f472b6;
+}
+.symptom-tab-btn .tab-icon {
+  font-size: 16px;
+}
+.symptom-tab-btn .tab-text {
+  font-size: 10px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.selected-symptom-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.symptom-detail-header .detail-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 2px 0;
+}
+.detail-short-desc {
+  font-size: 11px;
+  color: var(--text-sub);
+  margin: 0;
+}
+
+.cause-info-box {
+  background: var(--bg-surface-2);
+  border-left: 3px solid #f472b6;
+  border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: #cbd5e1;
+}
+
+.exercises-list-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.section-subtitle {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.exercises-cards-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exercise-action-card {
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.ex-info {
+  flex: 1;
+}
+
+.ex-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.ex-idx {
+  background: #f472b6;
+  color: #fff;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ex-name {
+  font-size: 12px;
+  color: #fff;
+}
+
+.ex-duration-badge {
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--bg-surface-3);
+  color: var(--primary);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+}
+
+.ex-guide {
+  font-size: 10px;
+  color: var(--text-sub);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.start-timer-mini-btn {
+  background: #f472b6;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-xs);
+  padding: 6px 10px;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.stretching-timer-box {
+  background: #1e1528;
+  border: 1px solid #f472b6;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(244, 114, 182, 0.2);
+}
+
+.timer-info {
+  display: flex;
+  flex-direction: column;
+}
+.current-ex-title {
+  font-size: 11px;
+  color: var(--text-sub);
+}
+.timer-digits {
+  font-size: 20px;
+  font-weight: 900;
+  color: #f472b6;
+  font-family: var(--font-mono);
+}
+
+.timer-btns {
+  display: flex;
+  gap: 6px;
+}
+.timer-control-btn {
+  background: var(--bg-surface-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.doctor-tips-card {
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.tips-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent-gold);
+  margin-bottom: 6px;
+}
+.tips-list {
+  margin: 0;
+  padding-left: 16px;
+  font-size: 10px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.safety-warning-card {
+  background: rgba(255, 77, 77, 0.08);
+  border: 1px solid rgba(255, 77, 77, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.safety-text strong {
+  display: block;
+  font-size: 11px;
+  color: var(--accent-danger);
+  margin-bottom: 2px;
+}
+.safety-text p {
+  margin: 0;
+  font-size: 10px;
+  color: #cbd5e1;
+  line-height: 1.35;
+}
+

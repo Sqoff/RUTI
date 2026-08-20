@@ -13,6 +13,14 @@ export const DEFAULT_EXERCISE_GROUPS = {
   '유산소/코어': ['트레드밀 (러닝)', '천국의 계단', '플랭크', '레그레이즈']
 };
 
+export const DEFAULT_MATERNITY_PROFILE = {
+  dueDate: '2026-11-20',
+  preWeight: 52.0,
+  heightCm: 164,
+  currentWeight: 56.4,
+  babyNickname: '튼튼이'
+};
+
 /**
  * 🔄 무손실 레거시 데이터 마이그레이션 엔진
  * 기존의 단순 문자열/구형 스티커 객체를 v2 통합 DecoItem 스키마로 100% 보존 변환
@@ -146,4 +154,26 @@ export async function getDayMeta(dateStr) {
 
 export async function saveDayMeta(dateStr, meta) {
   await localforage.setItem(`meta_${dateStr}`, meta);
+}
+
+// ==========================================
+// ⚙️ App Mode & Maternity Profile Services
+// ==========================================
+
+export async function getAppMode() {
+  const mode = await localforage.getItem('app_mode');
+  return mode || 'workout'; // 'workout' | 'maternity'
+}
+
+export async function saveAppMode(mode) {
+  await localforage.setItem('app_mode', mode);
+}
+
+export async function getMaternityProfile() {
+  const profile = await localforage.getItem('maternity_profile');
+  return profile || DEFAULT_MATERNITY_PROFILE;
+}
+
+export async function saveMaternityProfile(profile) {
+  await localforage.setItem('maternity_profile', profile);
 }
