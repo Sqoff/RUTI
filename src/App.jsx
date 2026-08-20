@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { HashRouter, Routes, Route, NavLink } from 'react-router-dom';
 import { Home, Dumbbell, Camera, BarChart3 } from 'lucide-react';
 import { HomeView } from './views/HomeView';
 import { WorkoutView } from './views/WorkoutView';
@@ -9,7 +9,7 @@ import './App.css';
 
 function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <HashRouter>
       <div className="app-container">
         <main className="main-content">
           <Routes>
@@ -59,7 +59,7 @@ function App() {
           </NavLink>
         </nav>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

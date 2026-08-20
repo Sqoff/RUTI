@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/RUTI/',
+  base: './', // Capacitor 모바일 앱 및 GitHub Pages 동시 호환 상대경로
   plugins: [
     react(),
     VitePWA({
@@ -14,8 +14,8 @@ export default defineConfig({
         name: '스마트 운동 일지',
         short_name: '운동일지',
         description: '오프라인 지원 PWA 운동 일지',
-        theme_color: '#000000',
-        background_color: '#000000',
+        theme_color: '#0b0f17',
+        background_color: '#0b0f17',
         display: 'standalone',
         icons: [
           {
