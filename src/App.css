@@ -2,13 +2,14 @@
 @import './styles/themes.css';
 
 /* ========================================================
-   📱 MAIN APP CONTAINER & LAYOUT
+   📱 MAIN APP CONTAINER & LAYOUT (Dynamic Viewport & Safe Area)
 ======================================================== */
 .app-container {
   width: 100%;
   max-width: 440px;
-  height: 100vh;
-  max-height: 920px;
+  height: 100dvh;
+  min-height: 100dvh;
+  max-height: 100dvh;
   background-color: var(--bg-app);
   color: var(--text-main);
   position: relative;
@@ -23,10 +24,13 @@
 @media (max-width: 480px) {
   .app-container {
     max-width: 100vw;
-    max-height: 100vh;
-    height: 100vh;
+    width: 100vw;
+    height: 100dvh;
+    min-height: 100dvh;
+    max-height: 100dvh;
     border-radius: 0;
     box-shadow: none;
+    border: none;
   }
 }
 
@@ -36,7 +40,8 @@
   overflow-x: hidden;
   position: relative;
   scrollbar-width: none;
-  padding-bottom: 70px;
+  padding-bottom: calc(72px + var(--safe-bottom));
+  -webkit-overflow-scrolling: touch;
 }
 .main-content::-webkit-scrollbar { display: none; }
 
@@ -266,17 +271,17 @@
 }
 
 /* ========================================================
-   🎨 DECO CANVAS WORKSPACE
+   🎨 DECO CANVAS WORKSPACE (Fluid Responsive Canvas)
 ======================================================== */
 .deco-canvas-container {
-  min-height: 480px;
-  margin: 0 16px;
+  min-height: clamp(380px, 58dvh, 580px);
+  margin: 0 clamp(10px, 3.5vw, 16px);
   border-radius: var(--radius-lg);
   position: relative;
   overflow: hidden;
   border: 1px solid var(--border-card);
   box-shadow: var(--shadow-md);
-  padding: 14px;
+  padding: clamp(10px, 3vw, 16px);
 }
 
 .canvas-workout-cards-layer {
@@ -542,7 +547,7 @@
 
 .ruti-main-fab-btn {
   position: absolute;
-  bottom: 78px;
+  bottom: calc(78px + var(--safe-bottom));
   right: 18px;
   width: 52px;
   height: 52px;
@@ -939,19 +944,21 @@
 }
 
 /* ========================================================
-   🧭 BOTTOM NAVIGATION
+   🧭 BOTTOM NAVIGATION (Safe Area Bottom)
 ======================================================== */
 .ruti-bottom-nav-bar {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 62px;
-  background: rgba(11, 15, 23, 0.95);
+  height: calc(62px + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: rgba(11, 15, 23, 0.96);
   backdrop-filter: blur(16px);
   border-top: 1px solid var(--border-subtle);
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 30;
+  box-sizing: border-box;
 }
 
 .ruti-nav-link-item {
@@ -1258,11 +1265,11 @@
 .volume-total-footer strong { color: var(--primary); font-size: 14px; }
 
 /* ========================================================
-   🌐 GLOBAL HEADER & SETTINGS BUTTON
+   🌐 GLOBAL HEADER & SETTINGS BUTTON (Safe Area Top)
 ======================================================== */
 .ruti-global-header {
-  height: 52px;
-  padding: 0 16px;
+  height: calc(52px + var(--safe-top));
+  padding: var(--safe-top) 16px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1270,6 +1277,7 @@
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
   z-index: 40;
+  box-sizing: border-box;
 }
 
 .header-brand-group {
